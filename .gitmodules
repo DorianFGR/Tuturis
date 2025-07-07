@@ -1,0 +1,3 @@
+[submodule "external/jossnet-core"]
+	path = external/jossnet-core
+	url = https://github.com/jossweb/jossnet-core.git
