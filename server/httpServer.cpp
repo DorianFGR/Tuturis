@@ -31,7 +31,15 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
             res.body() = read_file("server/controlPanel/index.html");
-        } else {
+        }else if(req.method() == http::verb::get && req.target() == "/login") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/html");
+            res.body() = read_file("server/controlPanel/login.html");
+        }else if(req.method() == http::verb::get && req.target() == "/styles.css") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/css");
+            res.body() = read_file("server/controlPanel/styles.css");
+        }else {
             res.result(http::status::not_found);
             res.set(http::field::content_type, "text/plain");
             res.body() = "404 - not found";
