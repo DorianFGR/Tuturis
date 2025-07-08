@@ -1,13 +1,16 @@
 #include <boost/asio.hpp>
 #include <iostream>
-#include <cstdlib>
-#include "db.h"
 #include "dotenv.h"
+#include "db.h"
+#include "httpServer.h"
+
+
 
 
 using namespace std;
 using boost::asio::ip::tcp;
 int port = 2008;
+boost::asio::ip::port_type httpPort = 2009;
 
 int main() {
 
@@ -45,6 +48,28 @@ int main() {
 
     mysql_free_result(result.res);
     mysql_close(con);
+
+
+    std::cout << "Starting HTTP server on port " << httpPort << std::endl;
+
+    try {
+        net::io_context ioc;
+        tcp::acceptor acceptor(ioc, {tcp::v4(), httpPort});
+
+        std::cout << "Server launched : http://localhost:2009\n";
+
+        while (true) {
+            tcp::socket socket(ioc);
+            acceptor.accept(socket);
+            serve_page(std::move(socket));
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Server error : " << e.what() << std::endl;
+        return 1;
+    }
+
+
     /*
     try {
         boost::asio::io_context io;
