@@ -1,17 +1,28 @@
 #include <boost/asio.hpp>
 #include <iostream>
+#include <cstdlib>
 #include "db.h"
+#include "dotenv.h"
 
+
+using namespace std;
 using boost::asio::ip::tcp;
 int port = 2008;
 
 int main() {
 
+    auto& dotenv = dotenv::env.load_dotenv();
+
+    const char* host = dotenv["MYSQL_HOST"].c_str();
+    const char* user = dotenv["MYSQL_USER"].c_str();
+    const char* password = dotenv["MYSQL_PASSWORD"].c_str();
+    const char* database = dotenv["MYSQL_DATABASE"].c_str();
+
     bool sucess;
     MYSQL *con;
     MYSQL_ROW row;
 
-    struct SQLConnection sqlDetails("localhost", "root", "", "tuturis");
+    struct SQLConnection sqlDetails( host, user, password, database);
 
     std::tie(sucess, con) = sqlConnectionSetup(sqlDetails);
 

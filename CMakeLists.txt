@@ -16,11 +16,17 @@ add_executable(tuturis_server
         server/db.cpp
 )
 
+#Dotenv
+add_definitions(-DANTLR4CPP_STATIC)
+add_subdirectory(external/cpp-dotenv)
+target_link_libraries(tuturis_server PRIVATE cpp_dotenv)
+
 target_link_libraries(tuturis_server
         PRIVATE
         Boost::system
         Boost::asio
         unofficial::libmysql::libmysql
+        cpp_dotenv
 
 )
 
