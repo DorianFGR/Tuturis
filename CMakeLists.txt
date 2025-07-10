@@ -20,6 +20,8 @@ add_executable(tuturis_server
         server/db.cpp
         server/httpServer.cpp
         server/httpServer.h
+        server/db_utils.cpp
+        server/db_utils.h
 )
 
 # ===================== Link Libraries =====================

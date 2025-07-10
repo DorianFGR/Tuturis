@@ -3,6 +3,7 @@
 #include "dotenv.h"
 #include "db.h"
 #include "httpServer.h"
+#include "db_utils.h"
 
 
 
@@ -14,41 +15,8 @@ boost::asio::ip::port_type httpPort = 2009;
 
 int main() {
 
-    auto& dotenv = dotenv::env.load_dotenv();
-
-    const char* host = dotenv["MYSQL_HOST"].c_str();
-    const char* user = dotenv["MYSQL_USER"].c_str();
-    const char* password = dotenv["MYSQL_PASSWORD"].c_str();
-    const char* database = dotenv["MYSQL_DATABASE"].c_str();
-
-    bool sucess;
-    MYSQL *con;
-    MYSQL_ROW row;
-
-    struct SQLConnection sqlDetails( host, user, password, database);
-
-    std::tie(sucess, con) = sqlConnectionSetup(sqlDetails);
-
-    if (!sucess) {
-
-        return 1;
-    }
-
-    auto result = execSQLQuery(con, "SELECT * FROM users");
-
-    if (!result.success) {
-        return 1;
-    }
-
-    std::cout << "Database output :\n" << std::endl;
-
-    while ((row = mysql_fetch_row(result.res)) != NULL) {
-        std::cout << "ID: " << row[0] << ", Name: " << row[1] << ", Email: " << row[2] << std::endl;
-    }
-
-    mysql_free_result(result.res);
-    mysql_close(con);
-
+    MYSQL* con;
+    createUser(con, "admin", "admin", "admin123");
 
     std::cout << "Starting HTTP server on port " << httpPort << std::endl;
 
