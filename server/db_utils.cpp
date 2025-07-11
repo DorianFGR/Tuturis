@@ -2,43 +2,73 @@
 #include "db_utils.h"
 #include "db.h"
 #include "dotenv.h"
+#include <argon2.h>
+
+std::string hashPassword(const std::string& password) {
+    auto& dotenv = dotenv::env.load_dotenv();
+    const char* salt = dotenv["SALT"].c_str();
+
+    char encoded[1024] = {0};
+
+    int result = argon2_hash(
+        2, 1 << 16, 1,
+        password.c_str(), password.size(),
+        salt, strlen(salt),
+        nullptr, 32,                 // Correction ici
+        encoded, sizeof(encoded),
+        Argon2_id,
+        ARGON2_VERSION_NUMBER
+    );
+
+    if (result != ARGON2_OK) {
+        std::cerr << "Argon2 error: " << argon2_error_message(result) << std::endl;
+        return "";
+    }
+
+    return std::string(encoded);
+}
 
 
 bool createUser(MYSQL* connection, const std::string& username, const std::string& email, const std::string& password) {
 
     auto& dotenv = dotenv::env.load_dotenv();
 
-
     const char* host = dotenv["MYSQL_HOST"].c_str();
     const char* user = dotenv["MYSQL_USER"].c_str();
     const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
     const char* database = dotenv["MYSQL_DATABASE"].c_str();
 
-    bool sucess;
-    MYSQL *con;
-    MYSQL_ROW row;
-
-    struct SQLConnection sqlDetails( host, user, db_password, database);
-
-    std::tie(sucess, con) = sqlConnectionSetup(sqlDetails);
-
-    if (!sucess) {
-
+    std::string hashed = hashPassword(password);
+    if (hashed.empty()) {
+        std::cerr << "Password hashing failed, aborting user creation.\n";
         return false;
     }
 
-    auto result = execSQLQuery(con, "INSERT INTO users (username, email, password) VALUES ('" + username + "', '" + email +  "', '" + password + "')");
+    MYSQL* con;
+    bool success;
+    std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
+
+    if (!success) {
+        std::cerr << "Connection to MySQL failed, aborting user creation.\n";
+        return false;
+    }
+
+    std::string query = "INSERT INTO users (username, email, password) VALUES ('" +
+                        username + "', '" + email + "', '" + hashed + "')";
+
+    QueryResult result = execSQLQuery(con, query);
     if (!result.success) {
-
+        std::cerr << "Failed to execute query: " << mysql_error(con) << std::endl;
+        mysql_close(con);
         return false;
     }
 
-    std::cout << "User " << username << " succesfully added to the database" << std::endl;
+    std::cout << "User '" << username << "' successfully added to the database.\n";
 
-    while ((row = mysql_fetch_row(result.res)) != NULL) {
-        std::cout << "ID: " << row[0] << ", Name: " << row[1] << ", Email: " << row[2] << std::endl;
+    if (result.res != nullptr) {
+        mysql_free_result(result.res);
     }
 
-    mysql_free_result(result.res);
     mysql_close(con);
+    return true;
 }

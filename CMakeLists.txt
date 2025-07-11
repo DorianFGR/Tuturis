@@ -14,6 +14,9 @@ find_package(unofficial-libmysql CONFIG REQUIRED)
 add_definitions(-DANTLR4CPP_STATIC)
 add_subdirectory(external/cpp-dotenv)
 
+# ===================== Argon2 =====================
+find_package(unofficial-argon2 CONFIG REQUIRED)
+
 # ===================== Executable =====================
 add_executable(tuturis_server
         server/main.cpp
@@ -31,6 +34,7 @@ target_link_libraries(tuturis_server
         Boost::asio
         unofficial::libmysql::libmysql
         cpp_dotenv
+        unofficial::argon2::libargon2
 )
 
 if (WIN32)
