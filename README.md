@@ -57,6 +57,7 @@ cmake --build build
 
 - [x] Create a simple HTTP server using Boost.Beast
 - [x] Serve static HTML files for the control panel
+- [x] Login Page Frontend
 - [x] Admin panel for managing users and passwords
 - [x] Create User admin page style
 

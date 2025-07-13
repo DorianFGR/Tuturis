@@ -2,11 +2,27 @@
 #include "db_utils.h"
 #include "db.h"
 #include "dotenv.h"
+#include <string>
+#include <random>
 #include <argon2.h>
+
+std::string generate_random_string(size_t length) {
+    const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    std::random_device random_device;
+    std::mt19937 generator(random_device());
+    std::uniform_int_distribution<> distribution(0, characters.size() - 1);
+
+    std::string random_string;
+    for (size_t i = 0; i < length; ++i) {
+        random_string += characters[distribution(generator)];
+    }
+
+    return random_string;
+}
 
 std::string hashPassword(const std::string& password) {
     auto& dotenv = dotenv::env.load_dotenv();
-    const char* salt = dotenv["SALT"].c_str();
+    const char* salt = generate_random_string(32).c_str();
 
     char encoded[1024] = {0};
 
@@ -14,7 +30,7 @@ std::string hashPassword(const std::string& password) {
         2, 1 << 16, 1,
         password.c_str(), password.size(),
         salt, strlen(salt),
-        nullptr, 32,                 // Correction ici
+        nullptr, 32,
         encoded, sizeof(encoded),
         Argon2_id,
         ARGON2_VERSION_NUMBER
