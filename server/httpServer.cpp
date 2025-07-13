@@ -33,43 +33,6 @@ std::string getFormValue(const std::string& body, const std::string& key) {
     return body.substr(start, end - start);
 }
 
-
-std::string urlDecode(const std::string& str) {
-    std::string result;
-    char ch;
-    int i, ii;
-    for (i = 0; i < str.length(); ++i) {
-        if (int(str[i]) == 37) { // %
-            sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
-            ch = static_cast<char>(ii);
-            result += ch;
-            i = i + 2;
-        } else if (str[i] == '+') {
-            result += ' ';
-        } else {
-            result += str[i];
-        }
-    }
-    return result;
-}
-
-std::string extractField(const std::string& body, const std::string& key) {
-    std::istringstream stream(body);
-    std::string pair;
-
-    while (std::getline(stream, pair, '&')) {
-        size_t equalPos = pair.find('=');
-        if (equalPos != std::string::npos) {
-            std::string field = urlDecode(pair.substr(0, equalPos));
-            std::string value = urlDecode(pair.substr(equalPos + 1));
-            if (field == key) {
-                return value;
-            }
-        }
-    }
-    return "";
-}
-
 std::unordered_map<std::string, std::string> parse_form_data(const std::string& body) {
     std::unordered_map<std::string, std::string> result;
     std::istringstream ss(body);

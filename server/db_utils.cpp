@@ -4,6 +4,7 @@
 #include "dotenv.h"
 #include <string>
 #include <random>
+#include <iomanip>
 #include <argon2.h>
 
 std::string generate_random_string(size_t length) {
@@ -44,6 +45,23 @@ std::string hashPassword(const std::string& password) {
     return std::string(encoded);
 }
 
+std::string urlDecode(const std::string& str) {
+    std::ostringstream decoded;
+    for (size_t i = 0; i < str.length(); ++i) {
+        if (str[i] == '%' && i + 2 < str.length()) {
+            std::string hex = str.substr(i + 1, 2);
+            char decodedChar = static_cast<char>(std::stoi(hex, nullptr, 16));
+            decoded << decodedChar;
+            i += 2;
+        } else if (str[i] == '+') {
+            decoded << ' ';
+        } else {
+            decoded << str[i];
+        }
+    }
+    return decoded.str();
+}
+
 
 bool createUser(MYSQL* connection, const std::string& username, const std::string& email, const std::string& password) {
 
@@ -54,11 +72,16 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
     const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
     const char* database = dotenv["MYSQL_DATABASE"].c_str();
 
+    std::string decodedMail = urlDecode(email);
+    std::string decodedUsername = urlDecode(username);
+
     std::string hashed = hashPassword(password);
     if (hashed.empty()) {
         std::cerr << "Password hashing failed, aborting user creation.\n";
         return false;
     }
+
+
 
     MYSQL* con;
     bool success;
@@ -70,7 +93,7 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
     }
 
     std::string query = "INSERT INTO users (username, email, password) VALUES ('" +
-                        username + "', '" + email + "', '" + hashed + "')";
+                        decodedUsername + "', '" + decodedMail + "', '" + hashed + "')";
 
     QueryResult result = execSQLQuery(con, query);
     if (!result.success) {
