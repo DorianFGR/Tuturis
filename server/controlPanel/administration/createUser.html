@@ -8,19 +8,94 @@
 </head>
 <body>
 
-<div class="createUser" id="createUser" style="display: block;">
-    <div class="createUserForm">
-        <h2>Create a new user</h2>
-        <form id="createUserForm" action="/administration/createUserAttempt" method="POST">
-            <input type="hidden" name="createUser" value="createUser">
-            <input type="text" placeholder="username" id="username" name="username" required>
-            <input type="text" placeholder="password" id="password" name="password" required>
-            <input type="text" placeholder="mail" id="mail" name="mail">
-            <input type="submit" value="Submit" name="Add User">
-            <button class="createUser"><a href="../">Back</a></button>
-        </form>
+<div class="topbar">
+    <div class="accountLogo">
+        <a href="../"><img src="  " alt="Logo"></a>
+    </div>
+    <div class="user-menu">
+        <div class="username" onclick="toggleDropdown()">
+            <img src="../img/user.webp" alt="User Avatar">
+        </div>
+        <div class="dropdown" id="dropdown">
+            <a href="/administration/users">Users</a>
+            <a href="/administration/connections">My account</a>
+        </div>
+    </div>
+</div>
+<h2 class="title">Create a new user</h2>
+<div class="mainContent">
+
+    <div class="createUser" id="createUser" style="display: block;">
+        <div class="createUserForm">
+            <form method="POST" action="/administration/createUserAttempt" class="form-container">
+
+                <!-- Name -->
+                <div class="wave-group">
+                    <input required type="text" class="input" name="username" placeholder=" ">
+                    <span class="bar"></span>
+                    <label class="label">
+                        <span class="label-char" style="--index: 0">N</span>
+                        <span class="label-char" style="--index: 1">a</span>
+                        <span class="label-char" style="--index: 2">m</span>
+                        <span class="label-char" style="--index: 3">e</span>
+                    </label>
+                </div>
+
+                <!-- Email -->
+                <div class="wave-group">
+                    <input required type="email" class="input" name="email" placeholder=" ">
+                    <span class="bar"></span>
+                    <label class="label">
+                        <span class="label-char" style="--index: 0">E</span>
+                        <span class="label-char" style="--index: 1">m</span>
+                        <span class="label-char" style="--index: 2">a</span>
+                        <span class="label-char" style="--index: 3">i</span>
+                        <span class="label-char" style="--index: 4">l</span>
+                    </label>
+                </div>
+
+                <!-- Password -->
+                <div class="wave-group">
+                    <input required type="password" class="input" name="password" placeholder=" ">
+                    <span class="bar"></span>
+                    <label class="label">
+                        <span class="label-char" style="--index: 0">P</span>
+                        <span class="label-char" style="--index: 1">a</span>
+                        <span class="label-char" style="--index: 2">s</span>
+                        <span class="label-char" style="--index: 3">s</span>
+                        <span class="label-char" style="--index: 4">w</span>
+                        <span class="label-char" style="--index: 5">o</span>
+                        <span class="label-char" style="--index: 6">r</span>
+                        <span class="label-char" style="--index: 7">d</span>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn">Create User</button>
+            </form>
+
+        </div>
     </div>
 </div>
 
 </body>
+
+<script>
+    function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.username')) {
+            var dropdowns = document.getElementsByClassName("dropdown");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+</script>
 </html>
