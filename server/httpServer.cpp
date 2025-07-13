@@ -4,6 +4,8 @@
 #include <boost/asio.hpp>
 #include <iostream>
 #include <fstream>
+#include "db_utils.h"
+#include "db.h"
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -20,6 +22,15 @@ std::vector<char> read_binary_file(const std::string& path) {
     std::ifstream file(path, std::ios::binary);
     if (!file) return {};
     return { std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
+}
+
+std::string getFormValue(const std::string& body, const std::string& key) {
+    std::string search = key + "=";
+    auto start = body.find(search);
+    if (start == std::string::npos) return "";
+    start += search.size();
+    auto end = body.find("&", start);
+    return body.substr(start, end - start);
 }
 
 
@@ -128,6 +139,22 @@ void serve_page(tcp::socket socket) {
             res_img.prepare_payload();
             http::write(socket, res_img);
             return;
+        }else if (req.method() == http::verb::post && req.target() == "/administration/createUserAttempt") {
+            std::string body = req.body();
+
+            std::string username = getFormValue(body, "username");
+            std::string email = getFormValue(body, "email");
+            std::string password = getFormValue(body, "password");
+
+            std::cout << "Received user: " << username << ", " << email << std::endl;
+
+            MYSQL* con;
+
+            createUser(con, username, email, password);
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/plain");
+            res.body() = "User created successfully!";
+
         }else {
             res.result(http::status::not_found);
             res.set(http::field::content_type, "text/plain");

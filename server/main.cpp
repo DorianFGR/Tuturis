@@ -15,9 +15,6 @@ boost::asio::ip::port_type httpPort = 2009;
 
 int main() {
 
-    MYSQL* con;
-    createUser(con, "admin", "admin", "admin123");
-
     std::cout << "Starting HTTP server on port " << httpPort << std::endl;
 
     try {

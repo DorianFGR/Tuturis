@@ -58,12 +58,13 @@ cmake --build build
 - [x] Create a simple HTTP server using Boost.Beast
 - [x] Serve static HTML files for the control panel
 - [x] Admin panel for managing users and passwords
+- [ ] Create User admin page style ( in progress )
 
 ### User management
 
 - [x] Create User class
 - [x] Hash users passwords using [Argon2](https://github.com/khovratovich/Argon2) before storing them
-- [ ] Manage User creation from admin Panel (in progress)
+- [x] Manage User creation from admin Panel
 - [ ] Manage User deletion from admin Panel
 - [ ] Manage User modification from admin Panel
 - [ ] Manage User password reset from admin Panel
