@@ -62,9 +62,56 @@ std::string urlDecode(const std::string& str) {
     return decoded.str();
 }
 
+bool prepareCreateUser(MYSQL* con, const std::string& username, const std::string& email, const std::string& hashedPassword) {
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[3];
+    memset(bind, 0, sizeof(bind));
+
+    const char* query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return false;
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)username.c_str();
+    bind[0].buffer_length = username.length();
+
+    bind[1].buffer_type = MYSQL_TYPE_STRING;
+    bind[1].buffer = (void*)email.c_str();
+    bind[1].buffer_length = email.length();
+
+    bind[2].buffer_type = MYSQL_TYPE_STRING;
+    bind[2].buffer = (void*)hashedPassword.c_str();
+    bind[2].buffer_length = hashedPassword.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    mysql_stmt_close(stmt);
+    return true;
+}
+
+
 
 bool createUser(MYSQL* connection, const std::string& username, const std::string& email, const std::string& password) {
-
     auto& dotenv = dotenv::env.load_dotenv();
 
     const char* host = dotenv["MYSQL_HOST"].c_str();
@@ -81,8 +128,6 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
         return false;
     }
 
-
-
     MYSQL* con;
     bool success;
     std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
@@ -92,21 +137,14 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
         return false;
     }
 
-    std::string query = "INSERT INTO users (username, email, password) VALUES ('" +
-                        decodedUsername + "', '" + decodedMail + "', '" + hashed + "')";
-
-    QueryResult result = execSQLQuery(con, query);
-    if (!result.success) {
-        std::cerr << "Failed to execute query: " << mysql_error(con) << std::endl;
+    bool insertionSuccess = prepareCreateUser(con, decodedUsername, decodedMail, hashed);
+    if (!insertionSuccess) {
+        std::cerr << "Prepared statement failed.\n";
         mysql_close(con);
         return false;
     }
 
     std::cout << "User '" << username << "' successfully added to the database.\n";
-
-    if (result.res != nullptr) {
-        mysql_free_result(result.res);
-    }
 
     mysql_close(con);
     return true;
