@@ -6,6 +6,10 @@
 #include <fstream>
 #include "db_utils.h"
 #include "db.h"
+#include "dotenv.h"
+#include <unordered_map>
+#include <sstream>
+
 
 namespace beast = boost::beast;
 namespace http = beast::http;
@@ -117,7 +121,35 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/plain");
             res.body() = "User created successfully!";
+        }else if (req.method() == http::verb::post && req.target() == "/loginAttempt") {
+            std::string body = req.body();
 
+            std::string username = getFormValue(body, "username");
+            std::string password = getFormValue(body, "password");
+
+            std::cout << "Received user: " << username << std::endl;
+
+            auto& dotenv = dotenv::env.load_dotenv();
+            const char* host = dotenv["MYSQL_HOST"].c_str();
+            const char* user = dotenv["MYSQL_USER"].c_str();
+            const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
+            const char* database = dotenv["MYSQL_DATABASE"].c_str();
+
+            MYSQL* con;
+            bool success;
+            std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
+
+            if (!success) {
+                res.result(http::status::internal_server_error);
+                res.set(http::field::content_type, "text/plain");
+                res.body() = "Database connection failed";
+            } else {
+                bool loginSuccess = loginAttempt(con, username, password);
+                res.result(http::status::ok);
+                res.set(http::field::content_type, "text/plain");
+                res.body() = loginSuccess ? "Login successful" : "Login failed";
+                mysql_close(con);
+            }
         }else {
             res.result(http::status::not_found);
             res.set(http::field::content_type, "text/plain");

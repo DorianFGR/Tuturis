@@ -62,6 +62,114 @@ std::string urlDecode(const std::string& str) {
     return decoded.str();
 }
 
+bool verifyPassword(const std::string& username, const std::string& password, const std::string& storedHash) {
+    int result = argon2_verify(
+        storedHash.c_str(),
+        password.c_str(), password.size(),
+        Argon2_id
+    );
+
+    if (result == ARGON2_OK) {
+        return true;
+    } else {
+        std::cerr << "Wrong Password for user : " << username << argon2_error_message(result) << std::endl;
+        return false;
+    }
+}
+
+std::string getHashedPassword(MYSQL* con, const std::string& username) {
+
+    while (mysql_more_results(con)) {
+        mysql_next_result(con);
+    }
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    MYSQL_BIND result_bind[1];
+    memset(bind, 0, sizeof(bind));
+    memset(result_bind, 0, sizeof(result_bind));
+
+    const char* query = "SELECT password FROM users WHERE username = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return "";
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)username.c_str();
+    bind[0].buffer_length = username.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    char password_buffer[1024];
+    unsigned long password_length;
+    result_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[0].buffer = password_buffer;
+    result_bind[0].buffer_length = sizeof(password_buffer);
+    result_bind[0].length = &password_length;
+
+    if (mysql_stmt_bind_result(stmt, result_bind)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    int fetch_result = mysql_stmt_fetch(stmt);
+    if (fetch_result == MYSQL_NO_DATA) {
+        std::cerr << "User not found\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (fetch_result != 0) {
+        std::cerr << "mysql_stmt_fetch() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    std::string hash(password_buffer, password_length);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+
+    return hash;
+}
+
+bool loginAttempt(MYSQL* connection, const std::string& username, const std::string& password) {
+    const std::string hashedPassword = getHashedPassword(connection, username);
+
+    if (hashedPassword.empty()) {
+        std::cerr << "Failed to retrieve hashed password for user: " << username << "\n";
+        return false;
+    }
+
+    if (verifyPassword(username, password, hashedPassword)) {
+        std::cout << "Login successful for user: " << username << "\n";
+        return true;
+    } else {
+        std::cerr << "Login failed for user: " << username << "\n";
+        return false;
+    }
+}
+
+
 bool prepareCreateUser(MYSQL* con, const std::string& username, const std::string& email, const std::string& hashedPassword) {
     MYSQL_STMT* stmt;
     MYSQL_BIND bind[3];
