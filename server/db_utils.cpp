@@ -170,12 +170,12 @@ bool loginAttempt(MYSQL* connection, const std::string& username, const std::str
 }
 
 
-bool prepareCreateUser(MYSQL* con, const std::string& username, const std::string& email, const std::string& hashedPassword) {
+bool prepareCreateUser(MYSQL* con, const std::string& id, const std::string& username, const std::string& email, const std::string& hashedPassword) {
     MYSQL_STMT* stmt;
-    MYSQL_BIND bind[3];
+    MYSQL_BIND bind[4];
     memset(bind, 0, sizeof(bind));
 
-    const char* query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    const char* query = "INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)";
     stmt = mysql_stmt_init(con);
     if (!stmt) {
         std::cerr << "mysql_stmt_init() failed\n";
@@ -188,18 +188,21 @@ bool prepareCreateUser(MYSQL* con, const std::string& username, const std::strin
         return false;
     }
 
-
     bind[0].buffer_type = MYSQL_TYPE_STRING;
-    bind[0].buffer = (void*)username.c_str();
-    bind[0].buffer_length = username.length();
+    bind[0].buffer = (void*)id.c_str();
+    bind[0].buffer_length = id.length();
 
     bind[1].buffer_type = MYSQL_TYPE_STRING;
-    bind[1].buffer = (void*)email.c_str();
-    bind[1].buffer_length = email.length();
+    bind[1].buffer = (void*)username.c_str();
+    bind[1].buffer_length = username.length();
 
     bind[2].buffer_type = MYSQL_TYPE_STRING;
-    bind[2].buffer = (void*)hashedPassword.c_str();
-    bind[2].buffer_length = hashedPassword.length();
+    bind[2].buffer = (void*)email.c_str();
+    bind[2].buffer_length = email.length();
+
+    bind[3].buffer_type = MYSQL_TYPE_STRING;
+    bind[3].buffer = (void*)hashedPassword.c_str();
+    bind[3].buffer_length = hashedPassword.length();
 
     if (mysql_stmt_bind_param(stmt, bind)) {
         std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
@@ -245,7 +248,9 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
         return false;
     }
 
-    bool insertionSuccess = prepareCreateUser(con, decodedUsername, decodedMail, hashed);
+    const std::string id = generate_random_string(16);
+
+    bool insertionSuccess = prepareCreateUser(con, id, decodedUsername, decodedMail, hashed);
     if (!insertionSuccess) {
         std::cerr << "Prepared statement failed.\n";
         mysql_close(con);
