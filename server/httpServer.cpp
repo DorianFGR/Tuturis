@@ -147,9 +147,19 @@ void serve_page(tcp::socket socket) {
                 res.body() = "Database connection failed";
             } else {
                 bool loginSuccess = loginAttempt(con, username, password, token);
-                res.result(http::status::ok);
-                res.set(http::field::set_cookie, "tuturisSession=" + token + "; HttpOnly; Path=/; Max-Age=3600");
-                res.body() = loginSuccess ? "Login successful" : "Login failed";
+                res.result(http::status::see_other);
+
+                if (loginSuccess) {
+
+                    res.set(http::field::set_cookie, "tuturisSession=" + token + "; HttpOnly; Path=/; Max-Age=3600");
+                    res.set(http::field::location, "/");
+                    res.set(http::field::content_length, "0");
+                    res.keep_alive(req.keep_alive());
+                }else {
+
+                    res.body() = "An error occurred during login, please check your credentials. If the problem persists, please contact the administrator.";
+                }
+
                 mysql_close(con);
             }
         }else {
