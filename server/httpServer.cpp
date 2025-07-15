@@ -123,6 +123,8 @@ void serve_page(tcp::socket socket) {
             res.body() = "User created successfully!";
         }else if (req.method() == http::verb::post && req.target() == "/loginAttempt") {
             std::string body = req.body();
+            std::string token = generate_random_string(32);
+
 
             std::string username = getFormValue(body, "username");
             std::string password = getFormValue(body, "password");
@@ -144,9 +146,9 @@ void serve_page(tcp::socket socket) {
                 res.set(http::field::content_type, "text/plain");
                 res.body() = "Database connection failed";
             } else {
-                bool loginSuccess = loginAttempt(con, username, password);
+                bool loginSuccess = loginAttempt(con, username, password, token);
                 res.result(http::status::ok);
-                res.set(http::field::content_type, "text/plain");
+                res.set(http::field::set_cookie, "tuturisSession=" + token + "; HttpOnly; Path=/; Max-Age=3600");
                 res.body() = loginSuccess ? "Login successful" : "Login failed";
                 mysql_close(con);
             }

@@ -153,10 +153,9 @@ std::string getUserID(MYSQL* con, const std::string& username) {
     return user_id;
 }
 
-bool createSession(MYSQL* con, const std::string& username) {
+bool createSession(MYSQL* con, const std::string& username, const std::string& token) {
 
     std::string userID = getUserID(con, username);
-    std::string token = generate_random_string(32);
 
     MYSQL_STMT* stmt;
     MYSQL_BIND bind[2];
@@ -275,7 +274,7 @@ std::string getHashedPassword(MYSQL* con, const std::string& username) {
     return hash;
 }
 
-bool loginAttempt(MYSQL* connection, const std::string& username, const std::string& password) {
+bool loginAttempt(MYSQL* connection, const std::string& username, const std::string& password, const std::string& token) {
     const std::string hashedPassword = getHashedPassword(connection, username);
 
     if (hashedPassword.empty()) {
@@ -285,7 +284,7 @@ bool loginAttempt(MYSQL* connection, const std::string& username, const std::str
 
     if (verifyPassword(username, password, hashedPassword)) {
         std::cout << "Login successful for user: " << username << "\n";
-        createSession(connection, username);
+        createSession(connection, username, token);
         return true;
     } else {
         std::cerr << "Login failed for user: " << username << "\n";
