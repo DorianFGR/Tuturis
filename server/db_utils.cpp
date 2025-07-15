@@ -6,6 +6,7 @@
 #include <random>
 #include <iomanip>
 #include <argon2.h>
+#include <memory>
 
 std::string generate_random_string(size_t length) {
     const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -75,6 +76,128 @@ bool verifyPassword(const std::string& username, const std::string& password, co
         std::cerr << "Wrong Password for user : " << username << argon2_error_message(result) << std::endl;
         return false;
     }
+}
+
+std::string getUserID(MYSQL* con, const std::string& username) {
+
+    while (mysql_more_results(con)) {
+        mysql_next_result(con);
+    }
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    MYSQL_BIND result_bind[1];
+    memset(bind, 0, sizeof(bind));
+    memset(result_bind, 0, sizeof(result_bind));
+
+    const char* query = "SELECT id FROM users WHERE username = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return "";
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)username.c_str();
+    bind[0].buffer_length = username.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    char id_buffer[1024];
+    unsigned long id_length;
+    result_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[0].buffer = id_buffer;
+    result_bind[0].buffer_length = sizeof(id_buffer);
+    result_bind[0].length = &id_length;
+
+    if (mysql_stmt_bind_result(stmt, result_bind)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    int fetch_result = mysql_stmt_fetch(stmt);
+    if (fetch_result == MYSQL_NO_DATA) {
+        std::cerr << "User not found\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (fetch_result != 0) {
+        std::cerr << "mysql_stmt_fetch() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    std::string user_id(id_buffer, id_length);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+
+    return user_id;
+}
+
+bool createSession(MYSQL* con, const std::string& username) {
+
+    std::string userID = getUserID(con, username);
+    std::string token = generate_random_string(32);
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[2];
+    memset(bind, 0, sizeof(bind));
+
+    const char* query = "INSERT INTO sessions (userID, token) VALUES (?, ?)";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return false;
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)userID.c_str();
+    bind[0].buffer_length = userID.length();
+
+    bind[1].buffer_type = MYSQL_TYPE_STRING;
+    bind[1].buffer = (void*)token.c_str();
+    bind[1].buffer_length = token.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    mysql_stmt_close(stmt);
+
+    return true;
 }
 
 std::string getHashedPassword(MYSQL* con, const std::string& username) {
@@ -162,6 +285,7 @@ bool loginAttempt(MYSQL* connection, const std::string& username, const std::str
 
     if (verifyPassword(username, password, hashedPassword)) {
         std::cout << "Login successful for user: " << username << "\n";
+        createSession(connection, username);
         return true;
     } else {
         std::cerr << "Login failed for user: " << username << "\n";
