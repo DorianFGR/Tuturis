@@ -68,7 +68,8 @@ cmake --build build
 - [x] Manage User creation from admin Panel
 - [x] Manage User login from control panel
 - [x] Session management for users
-- [ ] Manage logout from control panel ( in progress )
+- [x] Manage logout from control panel
+- [ ] Show user list in admin panel ( in progress )
 - [ ] Manage User deletion from admin Panel
 - [ ] Manage User modification from admin Panel
 - [ ] Manage User password reset from admin Panel

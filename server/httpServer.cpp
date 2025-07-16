@@ -74,6 +74,29 @@ std::string getCookieValue(const http::request<http::string_body>& req, const st
     return "";
 }
 
+bool delSession(const http::request<http::string_body>& req, const std::string& cookieName) {
+    std::string token = getCookieValue(req, cookieName);
+    if (token.empty()) return false;
+
+    auto& dotenv = dotenv::env.load_dotenv();
+    const char* host = dotenv["MYSQL_HOST"].c_str();
+    const char* user = dotenv["MYSQL_USER"].c_str();
+    const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
+    const char* database = dotenv["MYSQL_DATABASE"].c_str();
+
+    MYSQL* con;
+    bool success;
+    std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
+
+    if (!success) {
+        std::cerr << "Failed to connect to DB in delSession\n";
+        return false;
+    }
+
+    bool result = delSessionfromDB(con, token);
+    mysql_close(con);
+    return result;
+}
 
 void serve_page(tcp::socket socket) {
     try {
@@ -95,6 +118,13 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
             res.body() = read_file("server/controlPanel/login.html");
+        }else if(req.method() == http::verb::get && req.target() == "/logout") {
+            res.set(http::field::set_cookie, "tuturisSession=deleted; Path=/; Max-Age=0; HttpOnly");
+            res.set(http::field::location, "/");
+            res.result(http::status::see_other);
+            res.body() = "";
+
+            delSession(req, "tuturisSession");
         }else if(req.method() == http::verb::get && req.target() == "/administration") {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");

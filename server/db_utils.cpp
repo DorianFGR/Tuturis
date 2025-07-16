@@ -548,3 +548,42 @@ connectedUser getConnectedUser(MYSQL* con, const std::string& token) {
     std::cout << "Connected user: " << user.username << ", Email: " << user.email << ", Created at: " << user.created_at << "\n";
     return user;
 }
+
+bool delSessionfromDB(MYSQL* con, const std::string& token) {
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    memset(bind, 0, sizeof(bind));
+
+    const char* query = "DELETE FROM sessions WHERE token = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return false;
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)token.c_str();
+    bind[0].buffer_length = token.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return false;
+    }
+
+    mysql_stmt_close(stmt);
+    return true;
+}
