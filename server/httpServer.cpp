@@ -9,8 +9,9 @@
 #include "dotenv.h"
 #include <unordered_map>
 #include <sstream>
+#include <string>
 
-
+using namespace std;
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
@@ -54,6 +55,26 @@ std::unordered_map<std::string, std::string> parse_form_data(const std::string& 
     return result;
 }
 
+std::string getCookieValue(const http::request<http::string_body>& req, const std::string& cookie_name) {
+    if (req.find(http::field::cookie) == req.end()) {
+        return "";
+    }
+
+    std::string cookies = req.at(http::field::cookie);
+    std::istringstream cookieStream(cookies);
+    std::string cookie;
+
+    while (std::getline(cookieStream, cookie, ';')) {
+        cookie.erase(0, cookie.find_first_not_of(' '));
+        if (cookie.substr(0, cookie_name.size()) == cookie_name) {
+            return cookie.substr(cookie_name.size() + 1);
+        }
+    }
+
+    return "";
+}
+
+
 void serve_page(tcp::socket socket) {
     try {
         beast::flat_buffer buffer;
@@ -68,6 +89,8 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
             res.body() = read_file("server/controlPanel/index.html");
+            std::string token = getCookieValue(req, "tuturisSession");
+            std::cout << "Token: " << token << std::endl;
         }else if(req.method() == http::verb::get && req.target() == "/login") {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");

@@ -284,6 +284,7 @@ bool loginAttempt(MYSQL* connection, const std::string& username, const std::str
 
     if (verifyPassword(username, password, hashedPassword)) {
         std::cout << "Login successful for user: " << username << "\n";
+        getConnectedUser(connection,"Iv5kBTE3BM3ImyoXZprUWRTdSv0PBsqy");
         createSession(connection, username, token);
         return true;
     } else {
@@ -384,4 +385,166 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
 
     mysql_close(con);
     return true;
+}
+
+std::string getUserIDFromToken(MYSQL* con, const std::string& token) {
+
+    while (mysql_more_results(con)) {
+        mysql_next_result(con);
+    }
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    MYSQL_BIND result_bind[1];
+    memset(bind, 0, sizeof(bind));
+    memset(result_bind, 0, sizeof(result_bind));
+
+    const char* query = "SELECT userID FROM sessions WHERE token = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return "";
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)token.c_str();
+    bind[0].buffer_length = token.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    char userID_buffer[1024];
+    unsigned long userID_length;
+    result_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[0].buffer = userID_buffer;
+    result_bind[0].buffer_length = sizeof(userID_buffer);
+    result_bind[0].length = &userID_length;
+
+    if (mysql_stmt_bind_result(stmt, result_bind)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    int fetch_result = mysql_stmt_fetch(stmt);
+    if (fetch_result == MYSQL_NO_DATA) {
+        std::cerr << "User not found\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (fetch_result != 0) {
+        std::cerr << "mysql_stmt_fetch() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    std::string userID(userID_buffer, userID_length);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+
+    std::cout << "User ID: " << userID << "\n";
+
+    return userID;
+
+}
+
+connectedUser getConnectedUser(MYSQL* con, const std::string& token) {
+    connectedUser user;
+
+    std::string id = getUserIDFromToken(con, token);
+    if (id.empty()) {
+        std::cerr << "Invalid token: no user found.\n";
+        return user;
+    }
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    MYSQL_BIND result_bind[3];
+    memset(bind, 0, sizeof(bind));
+    memset(result_bind, 0, sizeof(result_bind));
+
+    const char* query = "SELECT username, email, created_at FROM users WHERE id = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return user;
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return user;
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)id.c_str();
+    bind[0].buffer_length = id.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return user;
+    }
+
+    char username_buf[256], email_buf[256], created_at_buf[256];
+    unsigned long username_len, email_len, created_at_len;
+
+    result_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[0].buffer = username_buf;
+    result_bind[0].buffer_length = sizeof(username_buf);
+    result_bind[0].length = &username_len;
+
+    result_bind[1].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[1].buffer = email_buf;
+    result_bind[1].buffer_length = sizeof(email_buf);
+    result_bind[1].length = &email_len;
+
+    result_bind[2].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[2].buffer = created_at_buf;
+    result_bind[2].buffer_length = sizeof(created_at_buf);
+    result_bind[2].length = &created_at_len;
+
+    if (mysql_stmt_bind_result(stmt, result_bind)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return user;
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return user;
+    }
+
+    int fetch_result = mysql_stmt_fetch(stmt);
+    if (fetch_result == MYSQL_NO_DATA) {
+        std::cerr << "User not found for ID: " << id << "\n";
+    } else if (fetch_result == 0) {
+        user.username = std::string(username_buf, username_len);
+        user.email = std::string(email_buf, email_len);
+        user.created_at = std::string(created_at_buf, created_at_len);
+    } else {
+        std::cerr << "mysql_stmt_fetch() failed: " << mysql_stmt_error(stmt) << "\n";
+    }
+
+    mysql_stmt_close(stmt);
+    std::cout << "Connected user: " << user.username << ", Email: " << user.email << ", Created at: " << user.created_at << "\n";
+    return user;
 }

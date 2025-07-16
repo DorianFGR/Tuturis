@@ -67,7 +67,8 @@ cmake --build build
 - [x] Hash users passwords using [Argon2](https://github.com/khovratovich/Argon2) before storing them
 - [x] Manage User creation from admin Panel
 - [x] Manage User login from control panel
-- [ ] Session management for users ( in progress )
+- [x] Session management for users
+- [ ] Manage logout from control panel ( in progress )
 - [ ] Manage User deletion from admin Panel
 - [ ] Manage User modification from admin Panel
 - [ ] Manage User password reset from admin Panel
