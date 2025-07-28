@@ -1,12 +1,72 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../styles/administration.css">
-    <title>Tuturis | Admin | Users</title>
+    <title>Tuturis | Admin | Users List</title>
+    <link rel="stylesheet" href="../styles/administration.css" />
+    <style>
+
+        table { border-collapse: collapse; width: 80%; margin: auto; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+    </style>
 </head>
 <body>
-<h1>Hello world !</h1>
+
+<div class="topbar">
+    <div class="accountLogo">
+        <a href=""><img src="" alt="Logo"></a>
+    </div>
+    <div class="user-menu">
+        <div class="username" onclick="toggleDropdown()">
+            <img src="../img/user.webp" alt="User Avatar">
+        </div>
+        <div class="dropdown" id="dropdown">
+            <a href="/administration">Control Panel</a>
+            <a href="/administration/connections">My account</a>
+        </div>
+    </div>
+</div>
+
+<h1 style="text-align: center;">Users List</h1>
+<div class="users-list" id="usersList">
+    <!-- Users will be inserted here by JavaScript -->
+</div>
+
+<script>
+    fetch("/administration/getAllUsers").then(r => r.json()).then(users => {
+        const list = document.getElementById("usersList");
+        users.forEach(user => {
+            const row = document.createElement("div");
+            row.className = "user-row";
+
+            row.innerHTML = `
+                <div class="user-info">
+                    <span><strong>ID:</strong> ${user.id}</span>
+                    <span><strong>Username:</strong> ${user.username}</span>
+                    <span><strong>Email:</strong> ${user.email}</span>
+                    <span><strong>Created:</strong> ${user.created_at}</span>
+                </div>
+            `;
+
+            list.appendChild(row);
+        });
+    });
+
+    function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.username')) {
+            var dropdowns = document.getElementsByClassName("dropdown");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+</script>
 </body>
 </html>

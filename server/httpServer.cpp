@@ -123,7 +123,6 @@ void serve_page(tcp::socket socket) {
             res.set(http::field::location, "/");
             res.result(http::status::see_other);
             res.body() = "";
-
             delSession(req, "tuturisSession");
         }else if(req.method() == http::verb::get && req.target() == "/administration") {
             res.result(http::status::ok);
@@ -213,6 +212,41 @@ void serve_page(tcp::socket socket) {
                     res.body() = "An error occurred during login, please check your credentials. If the problem persists, please contact the administrator.";
                 }
 
+                mysql_close(con);
+            }
+        }else if (req.method() == http::verb::get && req.target() == "/administration/getAllUsers") {
+            auto& dotenv = dotenv::env.load_dotenv();
+            const char* host = dotenv["MYSQL_HOST"].c_str();
+            const char* user = dotenv["MYSQL_USER"].c_str();
+            const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
+            const char* database = dotenv["MYSQL_DATABASE"].c_str();
+
+            MYSQL* con;
+            bool success;
+            std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
+
+            if (!success) {
+                res.result(http::status::internal_server_error);
+                res.set(http::field::content_type, "application/json");
+                res.body() = "{\"error\": \"Database connection failed\"}";
+            } else {
+                std::vector<ListedUser> users = getAllUsers(con);
+                std::ostringstream json;
+                json << "[";
+                for (size_t i = 0; i < users.size(); ++i) {
+                    const auto& user = users[i];
+                    json << "{"
+                         << "\"id\": \"" << user.id << "\","
+                         << "\"username\": \"" << user.username << "\","
+                         << "\"email\": \"" << user.email << "\","
+                         << "\"created_at\": \"" << user.created_at << "\""
+                         << "}";
+                    if (i != users.size() - 1) json << ",";
+                }
+                json << "]";
+                res.result(http::status::ok);
+                res.set(http::field::content_type, "application/json");
+                res.body() = json.str();
                 mysql_close(con);
             }
         }else {

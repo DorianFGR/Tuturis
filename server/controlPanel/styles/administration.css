@@ -8,6 +8,7 @@ body {
     display: flex;
     flex-direction: column;
     font-family: 'Roboto', sans-serif;
+    color: #ffffff;
 }
 
 .mainContent {
@@ -67,7 +68,7 @@ body {
 }
 
 .wave-group .label-char {
-    --index: 0; /* Default value for --index */
+    --index: 0;
     transition: 0.2s ease all;
     transition-delay: calc(var(--index) * .05s);
 }
@@ -389,4 +390,43 @@ button:hover {
 
 .show {
     display: block;
+}
+
+.users-list {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.user-row {
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.user-row:hover {
+    background-color: #3d3d3d;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.user-info span {
+    font-size: 0.95em;
+    color: #ccc;
+}
+
+.user-info span strong {
+    color: #fff;
 }

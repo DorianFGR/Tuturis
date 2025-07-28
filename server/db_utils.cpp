@@ -587,3 +587,76 @@ bool delSessionfromDB(MYSQL* con, const std::string& token) {
     mysql_stmt_close(stmt);
     return true;
 }
+
+std::vector<ListedUser> getAllUsers(MYSQL* con) {
+    std::vector<ListedUser> users;
+
+    while (mysql_more_results(con)) {
+        mysql_next_result(con);
+    }
+
+    const char* query = "SELECT id, username, email, created_at FROM users";
+
+    MYSQL_STMT* stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return users;
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return users;
+    }
+
+    MYSQL_BIND result[4];
+    memset(result, 0, sizeof(result));
+
+    char id_buffer[64], username_buffer[64], email_buffer[128], created_buffer[64];
+    unsigned long id_len, username_len, email_len, created_len;
+
+    result[0].buffer_type = MYSQL_TYPE_STRING;
+    result[0].buffer = id_buffer;
+    result[0].buffer_length = sizeof(id_buffer);
+    result[0].length = &id_len;
+
+    result[1].buffer_type = MYSQL_TYPE_STRING;
+    result[1].buffer = username_buffer;
+    result[1].buffer_length = sizeof(username_buffer);
+    result[1].length = &username_len;
+
+    result[2].buffer_type = MYSQL_TYPE_STRING;
+    result[2].buffer = email_buffer;
+    result[2].buffer_length = sizeof(email_buffer);
+    result[2].length = &email_len;
+
+    result[3].buffer_type = MYSQL_TYPE_STRING;
+    result[3].buffer = created_buffer;
+    result[3].buffer_length = sizeof(created_buffer);
+    result[3].length = &created_len;
+
+    if (mysql_stmt_bind_result(stmt, result)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return users;
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return users;
+    }
+
+    while (mysql_stmt_fetch(stmt) == 0) {
+        ListedUser user;
+        user.id = std::string(id_buffer, id_len);
+        user.username = std::string(username_buffer, username_len);
+        user.email = std::string(email_buffer, email_len);
+        user.created_at = std::string(created_buffer, created_len);
+        users.push_back(user);
+    }
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+    return users;
+}
