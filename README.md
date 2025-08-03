@@ -70,6 +70,14 @@ cmake --build build
 - [x] Session management for users
 - [x] Manage logout from control panel
 - [x] Show user list in admin panel
-- [ ] Manage User deletion from admin Panel ( in progress )
+- [ ] Manage User deletion from admin Panel
 - [ ] Manage User modification from admin Panel
 - [ ] Manage User password reset from admin Panel
+
+### User/Admin authentication
+
+- [x] Implement user authentication using hashed passwords
+
+#### Authentification Server
+- [x] Create a simple nodeJS server
+- [x] Implement webAuth using nodeJS ( in progress )

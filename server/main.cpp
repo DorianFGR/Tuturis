@@ -7,7 +7,6 @@
 
 
 
-
 using namespace std;
 using boost::asio::ip::tcp;
 int port = 2008;
@@ -23,6 +22,9 @@ int main() {
 
         std::cout << "Server launched : http://localhost:2009\n";
 
+        std::cout << "Starting authentification server" << std::endl;
+        std::system("node server/auth-server/index.js &");
+
         while (true) {
             tcp::socket socket(ioc);
             acceptor.accept(socket);
@@ -33,6 +35,7 @@ int main() {
         std::cerr << "Server error : " << e.what() << std::endl;
         return 1;
     }
+
 
 
     /*
