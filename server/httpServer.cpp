@@ -136,6 +136,14 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
             res.body() = read_file("server/controlPanel/administration/createUser.html");
+        }else if(req.method() == http::verb::get && req.target() == "/testWebauthn") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/html");
+            res.body() = read_file("server/controlPanel/testWebAuthn.html");
+        }else if(req.method() == http::verb::get && req.target() == "/webauthn.js") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "application/javascript");
+            res.body() = read_file("server/controlPanel/webauthn.js");
         }else if(req.method() == http::verb::get && req.target() == "/styles/login.css") {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/css");

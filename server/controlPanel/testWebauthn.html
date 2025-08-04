@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebAuthn Test</title>
+</head>
+<body>
+<button id="registerBtn" onclick="register()">Register Security Key</button>
+<div id="result"></div>
+
+<script src="webauthn.js"></script>
+<script>
+    let isRegistered = false;
+
+    async function register() {
+        const result = document.getElementById('result');
+        const registerBtn = document.getElementById('registerBtn');
+        const authenticateBtn = document.getElementById('authenticateBtn');
+
+        result.textContent = 'Registering... ';
+        registerBtn.disabled = true;
+        //authenticateBtn.disabled = true;
+
+        try {
+            const success = await registerWebAuthn('user123', 'DorianFGR');
+
+            if (success) {
+                result.textContent = 'Registration successful!';
+                isRegistered = true;
+                authenticateBtn.disabled = false;
+            } else {
+                result.textContent = 'Registration failed!';
+            }
+        } catch (error) {
+            result.textContent = 'Registration error: ' + error.message;
+        }
+
+        registerBtn.disabled = false;
+    }
+
+    async function authenticate() {
+        if (!isRegistered) {
+            document.getElementById('result').textContent = 'Please register first!';
+            return;
+        }
+
+        const result = document.getElementById('result');
+        const authenticateBtn = document.getElementById('authenticateBtn');
+        const registerBtn = document.getElementById('registerBtn');
+
+        result.textContent = 'Authenticating...';
+        authenticateBtn.disabled = true;
+        registerBtn.disabled = true;
+
+        try {
+            const success = await authenticateWebAuthn('user123');
+            result.textContent = success ? 'Authentication successful!' : 'Authentication failed!';
+        } catch (error) {
+            result.textContent = 'Authentication error: ' + error.message;
+        }
+
+        authenticateBtn.disabled = false;
+        registerBtn.disabled = false;
+    }
+</script>
+</body>
+</html>

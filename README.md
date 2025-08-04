@@ -80,4 +80,4 @@ cmake --build build
 
 #### Authentification Server
 - [x] Create a simple nodeJS server
-- [x] Implement webAuth using nodeJS ( in progress )
+- [ ] Implement webAuth using nodeJS ( in progress )

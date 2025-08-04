@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # ===================== Boost ======================
-find_package(Boost REQUIRED COMPONENTS system asio beast)
+find_package(Boost REQUIRED COMPONENTS system asio beast process)
 
 # ===================== MySQL ======================
 find_package(unofficial-libmysql CONFIG REQUIRED)
@@ -32,6 +32,7 @@ target_link_libraries(tuturis_server
         PRIVATE
         Boost::system
         Boost::asio
+        Boost::process
         unofficial::libmysql::libmysql
         cpp_dotenv
         unofficial::argon2::libargon2
