@@ -153,6 +153,50 @@ async function authenticateWebAuthn(userId) {
     }
 }
 
+async function registerWebAuthn(userId, username) {
+    const optionsResponse = await fetch('http://localhost:2010/webauthn/registration/options', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, username })
+    });
+
+    const options = await optionsResponse.json();
+    const publicKeyCredentialCreationOptions = {
+        ...options,
+        challenge: base64urlToUint8Array(options.challenge),
+        user: {
+            ...options.user,
+            id: base64urlToUint8Array(options.user.id),
+        },
+        excludeCredentials: options.excludeCredentials?.map(cred => ({
+            ...cred,
+            id: base64urlToUint8Array(cred.id),
+        })) || [],
+    };
+
+    const credential = await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
+    if (!credential) throw new Error('Failed to create credential');
+
+    const credentialForServer = {
+        id: credential.id,
+        rawId: uint8ArrayToBase64url(new Uint8Array(credential.rawId)),
+        response: {
+            attestationObject: uint8ArrayToBase64url(new Uint8Array(credential.response.attestationObject)),
+            clientDataJSON: uint8ArrayToBase64url(new Uint8Array(credential.response.clientDataJSON)),
+        },
+        type: credential.type
+    };
+
+    await fetch('http://localhost:2009/api/webauthn-key-created', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId,
+            credential: credentialForServer
+        })
+    });
+}
+
 function base64urlToUint8Array(base64url) {
     if (!base64url) {
         throw new Error('base64url string is undefined or empty');

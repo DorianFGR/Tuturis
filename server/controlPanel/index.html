@@ -32,12 +32,12 @@
     </div>
     <div class="box">
         <div class="box-title">Account</div>
-        <div class="box-content"><?php echo $mail ?></div>
-        <a href="/account"><button class="box   -button">See</button></a>
+        <div class="box-content"><?php echo htmlspecialchars($mail); ?></div>
+        <a href="/account"><button class="box-button">See</button></a>
     </div>
     <div class="box">
         <div class="box-title">Security Settings</div>
-        <a href="/security"><button class="box-button">See</button></a>
+        <a href="/userSettings"><button class="box-button">See</button></a>
     </div>
     <div class="box">
         <div class="box-title">Recent Activity</div>

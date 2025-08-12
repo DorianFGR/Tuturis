@@ -136,6 +136,10 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
             res.body() = read_file("server/controlPanel/administration/createUser.html");
+        }else if(req.method() == http::verb::get && req.target() == "/userSettings") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/html");
+            res.body() = read_file("server/controlPanel/userSettings.html");
         }else if(req.method() == http::verb::get && req.target() == "/testWebauthn") {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/html");
@@ -144,6 +148,10 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "application/javascript");
             res.body() = read_file("server/controlPanel/webauthn.js");
+        }else if(req.method() == http::verb::get && req.target() == "/script.js") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "application/javascript");
+            res.body() = read_file("server/controlPanel/script.js");
         }else if(req.method() == http::verb::get && req.target() == "/styles/login.css") {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/css");
@@ -181,6 +189,58 @@ void serve_page(tcp::socket socket) {
             res.result(http::status::ok);
             res.set(http::field::content_type, "text/plain");
             res.body() = "User created successfully!";
+        }else if(req.method() == http::verb::get && req.target() == "/api/isLoggedIn") {
+            std::string token = getCookieValue(req, "tuturisSession");
+
+            auto& dotenv = dotenv::env.load_dotenv();
+            const char* host = dotenv["MYSQL_HOST"].c_str();
+            const char* user = dotenv["MYSQL_USER"].c_str();
+            const char* db_password = dotenv["MYSQL_PASSWORD"].c_str();
+            const char* database = dotenv["MYSQL_DATABASE"].c_str();
+
+            MYSQL* con;
+            bool success;
+            std::tie(success, con) = sqlConnectionSetup(SQLConnection(host, user, db_password, database));
+
+            if (!success) {
+                res.result(http::status::internal_server_error);
+                res.set(http::field::content_type, "application/json");
+                res.body() = R"({"result": false, "error": "Database connection failed"})";
+            } else {
+                std::string userID = getUserIDFromToken(con, token);
+
+                if (!userID.empty()) {
+                    res.result(http::status::ok);
+                    std::string body = std::string("{\"result\": true, \"token\": \"") + token + "\"}";
+                    res.body() = body;
+                } else {
+                    res.result(http::status::ok);
+                    res.set(http::field::content_type, "application/json");
+                    res.body() = R"({"result": false, "error": "Invalid token"})";
+                }
+
+                mysql_close(con);
+            }
+        }else if (req.method() == http::verb::post && req.target() == "/api/webauthn-key-created") {
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "application/json");
+            res.body() = R"({"status": "success", "message": "WebAuthn key created successfully."})";
+            /*
+            std::string body = req.body();
+
+            std::string username = getFormValue(body, "username");
+            std::string email = getFormValue(body, "email");
+            std::string password = getFormValue(body, "password");
+
+            std::cout << "Received user: " << username << ", " << email << std::endl;
+
+            MYSQL* con;
+
+            createUser(con, username, email, password);
+            res.result(http::status::ok);
+            res.set(http::field::content_type, "text/plain");
+            res.body() = "User created successfully!";
+            */
         }else if (req.method() == http::verb::post && req.target() == "/loginAttempt") {
             std::string body = req.body();
             std::string token = generate_random_string(32);

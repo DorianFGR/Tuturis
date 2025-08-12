@@ -390,7 +390,15 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
 std::string getUserIDFromToken(MYSQL* con, const std::string& token) {
 
     while (mysql_more_results(con)) {
-        mysql_next_result(con);
+        if (mysql_next_result(con) != 0) {
+            std::cerr << "Error processing pending results: " << mysql_error(con) << "\n";
+            break;
+        }
+    }
+
+    if (mysql_ping(con) != 0) {
+        std::cerr << "Connection lost: " << mysql_error(con) << "\n";
+        return "";
     }
 
     MYSQL_STMT* stmt;

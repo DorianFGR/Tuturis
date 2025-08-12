@@ -78,6 +78,9 @@ cmake --build build
 
 - [x] Implement user authentication using hashed passwords
 
-#### Authentification Server
+### Authentification Server
 - [x] Create a simple nodeJS server
-- [ ] Implement webAuth using nodeJS ( in progress )
+- [x] Implement create key functionality
+- [x] Check if the user is logged in JavaScript
+- [ ] Store new Keys in database ( in progress)
+- [ ] Implement webAuth using nodeJS
