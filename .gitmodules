@@ -7,3 +7,9 @@
 [submodule "external/cpp-dotenv"]
 	path = external/cpp-dotenv
 	url = https://github.com/adeharo9/cpp-dotenv.git
+[submodule "cppcodec"]
+	path = cppcodec
+	url = https://github.com/tplgy/cppcodec.git
+[submodule "external/cppcodec"]
+	path = external/cppcodec
+	url = https://github.com/tplgy/cppcodec.git

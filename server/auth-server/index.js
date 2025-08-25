@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const rpName = 'Mon Application';
+const rpName = 'Tuturis WebAuthn Server';
 const rpID = 'localhost';
 const origin = 'http://localhost:2009';
 
@@ -19,7 +19,7 @@ const userCredentials = new Map();
 const userChallenges = new Map();
 
 app.get('/', (req, res) => {
-    res.send('Serveur WebAuthn opérationnel !');
+    res.send('WebAuthn server is up !');
 });
 
 app.get('/health', (req, res) => {

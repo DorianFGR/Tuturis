@@ -4,6 +4,10 @@ project(Tuturis)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif()
+
 # ===================== Boost ======================
 find_package(Boost REQUIRED COMPONENTS system asio beast process)
 
@@ -25,6 +29,18 @@ add_executable(tuturis_server
         server/httpServer.h
         server/db_utils.cpp
         server/db_utils.h
+        server/PasskeysToDB.cpp
+        server/PasskeysToDB.h
+)
+
+# ===================== Include Dirs =====================
+# json.hpp local -> include/json.hpp
+# cppcodec submodule -> external/cppcodec/include
+# dotenv -> external/cpp-dotenv/include
+target_include_directories(tuturis_server PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/external/cppcodec/include
+        ${CMAKE_SOURCE_DIR}/external/cpp-dotenv/include
 )
 
 # ===================== Link Libraries =====================

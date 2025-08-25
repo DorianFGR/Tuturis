@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <argon2.h>
 #include <memory>
+#include "PasskeysToDB.h"
 
 std::string generate_random_string(size_t length) {
     const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -20,6 +21,20 @@ std::string generate_random_string(size_t length) {
     }
 
     return random_string;
+}
+
+std::string generate_random_id(size_t length) {
+    const std::string numbers = "0123456789";
+    std::random_device random_device;
+    std::mt19937 generator(random_device());
+    std::uniform_int_distribution<> distribution(0, numbers.size() - 1);
+
+    std::string random_id;
+    for (size_t i = 0; i < length; ++i) {
+        random_id += numbers[distribution(generator)];
+    }
+
+    return random_id;
 }
 
 std::string hashPassword(const std::string& password) {
@@ -372,7 +387,7 @@ bool createUser(MYSQL* connection, const std::string& username, const std::strin
         return false;
     }
 
-    const std::string id = generate_random_string(16);
+    const std::string id = generate_random_id(20);
 
     bool insertionSuccess = prepareCreateUser(con, id, decodedUsername, decodedMail, hashed);
     if (!insertionSuccess) {
@@ -472,6 +487,93 @@ std::string getUserIDFromToken(MYSQL* con, const std::string& token) {
     return userID;
 
 }
+
+std::string getUsernameFromToken(MYSQL* con, const std::string& token, const std::string& userID) {
+
+    while (mysql_more_results(con)) {
+        if (mysql_next_result(con) != 0) {
+            std::cerr << "Error processing pending results: " << mysql_error(con) << "\n";
+            break;
+        }
+    }
+
+    if (mysql_ping(con) != 0) {
+        std::cerr << "Connection lost: " << mysql_error(con) << "\n";
+        return "";
+    }
+
+    MYSQL_STMT* stmt;
+    MYSQL_BIND bind[1];
+    MYSQL_BIND result_bind[1];
+    memset(bind, 0, sizeof(bind));
+    memset(result_bind, 0, sizeof(result_bind));
+
+    const char* query = "SELECT username FROM users WHERE id = ?";
+    stmt = mysql_stmt_init(con);
+    if (!stmt) {
+        std::cerr << "mysql_stmt_init() failed\n";
+        return "";
+    }
+
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        std::cerr << "mysql_stmt_prepare() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)userID.c_str();
+    bind[0].buffer_length = userID.length();
+
+    if (mysql_stmt_bind_param(stmt, bind)) {
+        std::cerr << "mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    char username_buffer[1024];
+    unsigned long username_length;
+    result_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    result_bind[0].buffer = username_buffer;
+    result_bind[0].buffer_length = sizeof(username_buffer);
+    result_bind[0].length = &username_length;
+
+    if (mysql_stmt_bind_result(stmt, result_bind)) {
+        std::cerr << "mysql_stmt_bind_result() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (mysql_stmt_execute(stmt)) {
+        std::cerr << "mysql_stmt_execute() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    int fetch_result = mysql_stmt_fetch(stmt);
+    if (fetch_result == MYSQL_NO_DATA) {
+        std::cerr << "User not found\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    if (fetch_result != 0) {
+        std::cerr << "mysql_stmt_fetch() failed: " << mysql_stmt_error(stmt) << "\n";
+        mysql_stmt_close(stmt);
+        return "";
+    }
+
+    std::string username(username_buffer, username_length);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+
+    std::cout << "Username: " << username << "\n";
+
+    return username;
+
+}
+
 
 connectedUser getConnectedUser(MYSQL* con, const std::string& token) {
     connectedUser user;
@@ -667,4 +769,44 @@ std::vector<ListedUser> getAllUsers(MYSQL* con) {
     mysql_stmt_free_result(stmt);
     mysql_stmt_close(stmt);
     return users;
+}
+
+bool handleRegister(const std::string& body_json, uint64_t user_id) { // Register Passkey
+    MYSQL* conn = nullptr;
+    std::string err;
+
+    if (!db::mysql_connect_env(&conn, &err)) {
+        std::cerr << "MySQL connect failed: " << err << std::endl;
+        return false;
+    }
+
+    const std::string rp_id = "tuturis.com";
+
+    uint64_t passkey_id = 0;
+    bool ok = false;
+
+    try {
+        ok = db::insert_passkey_from_registration_json(
+            conn,
+            user_id,
+            rp_id,
+            body_json,
+            &passkey_id,
+            &err
+        );
+    } catch (const std::exception& e) {
+        std::cerr << "Parsing/CBOR error: " << e.what() << std::endl;
+        mysql_close(conn);
+        return false;
+    }
+
+    if (!ok) {
+        std::cerr << "Insert failed: " << err << std::endl;
+        mysql_close(conn);
+        return false;
+    }
+
+    std::cout << "Passkey insérée avec id=" << passkey_id << std::endl;
+    mysql_close(conn);
+    return true;
 }

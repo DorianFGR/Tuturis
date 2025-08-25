@@ -50,31 +50,27 @@
     }
 
     async function register() {
-
-
-        const token = isLoggedIn(); // Ensure the user is logged in before proceeding
-        console.log(token);
-
-        const result = document.getElementById('result');
-        const registerBtn = document.getElementById('registerBtn');
-        const authenticateBtn = document.getElementById('authenticateBtn');
-
-        registerBtn.disabled = true;
-        //authenticateBtn.disabled = true;
-
         try {
-            const success = await registerWebAuthn('user123', 'DorianFGR');
+            const data = await isLoggedIn();
+            const token = data.token;
+            const userID = data.userId;
+            const username = data.username;
+
+            console.log(token);
+
+            const registerBtn = document.getElementById('registerBtn');
+            registerBtn.disabled = true;
+
+            const success = await registerWebAuthn(userID, username);
 
             if (success) {
-                //result.textContent = 'Registration successful!';
-                isRegistered = true;
+                console.log('Registration successful!');
             } else {
-                //result.textContent = 'Registration failed!';
+                console.log('Registration failed!');
             }
         } catch (error) {
-            //result.textContent = 'Registration error: ' + error.message;
+            console.error('Registration error:', error.message);
         }
-
     }
 
 

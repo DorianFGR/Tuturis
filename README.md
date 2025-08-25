@@ -82,5 +82,6 @@ cmake --build build
 - [x] Create a simple nodeJS server
 - [x] Implement create key functionality
 - [x] Check if the user is logged in JavaScript
-- [ ] Store new Keys in database ( in progress)
+- [x] Store new Keys in database 
+- [ ] Implement key verification ( in progress )
 - [ ] Implement webAuth using nodeJS

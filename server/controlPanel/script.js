@@ -1,5 +1,5 @@
 function isLoggedIn() {
-    fetch('http://localhost:2009/api/isLoggedIn', {
+    return fetch('http://localhost:2009/api/isLoggedIn', {
         method: 'GET',
         headers: { 'Accept': 'application/json' }
     })
@@ -9,17 +9,24 @@ function isLoggedIn() {
             return JSON.parse(text);
         })
         .then((data) => {
-            let token;
             if (data.result === true) {
-                return token = data.token;
+                return {
+                    token: data.token,
+                    userId: data.userId,
+                    username: data.username
+                };
             } else {
-                console.warn('Non connecté:', data.error);
-                // window.location.replace('/login');
+                console.warn('You are not logged in : ', data.error);
+                window.location.replace('/login');
+                throw new Error('Not logged in');
             }
         })
         .catch((err) => {
             console.error('Request Error:', err);
+            throw err;
         });
 }
 
-isLoggedIn(); // Calling function at the loading of the page to check if the user is logged in
+isLoggedIn().catch(() => {
+
+});

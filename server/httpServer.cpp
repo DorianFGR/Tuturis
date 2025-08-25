@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <string>
+#include "../external/json.hpp"
 
 using namespace std;
 namespace beast = boost::beast;
@@ -208,10 +209,11 @@ void serve_page(tcp::socket socket) {
                 res.body() = R"({"result": false, "error": "Database connection failed"})";
             } else {
                 std::string userID = getUserIDFromToken(con, token);
+                std::string username = getUsernameFromToken(con, token, userID);
 
                 if (!userID.empty()) {
                     res.result(http::status::ok);
-                    std::string body = std::string("{\"result\": true, \"token\": \"") + token + "\"}";
+                    std::string body = std::string("{\"result\": true, \"token\": \"") + token + "\", \"userId\": \"" + userID + "\", \"username\": \"" + username + "\"}";
                     res.body() = body;
                 } else {
                     res.result(http::status::ok);
@@ -221,26 +223,62 @@ void serve_page(tcp::socket socket) {
 
                 mysql_close(con);
             }
-        }else if (req.method() == http::verb::post && req.target() == "/api/webauthn-key-created") {
-            res.result(http::status::ok);
-            res.set(http::field::content_type, "application/json");
-            res.body() = R"({"status": "success", "message": "WebAuthn key created successfully."})";
-            /*
-            std::string body = req.body();
+       } else if (req.method() == http::verb::post && req.target() == "/api/webauthn-key-created") {
+            const std::string contentType = (req.find(http::field::content_type) != req.end())
+                ? std::string(req[http::field::content_type])
+                : "";
+            const std::string body = req.body();
 
-            std::string username = getFormValue(body, "username");
-            std::string email = getFormValue(body, "email");
-            std::string password = getFormValue(body, "password");
+            std::cout << "[webauthn-key-created] HIT" << std::endl;
+            std::cout << "[webauthn-key-created] Body: " << body << std::endl;
 
-            std::cout << "Received user: " << username << ", " << email << std::endl;
+            if (contentType.find("application/json") != std::string::npos) {
+                try {
+                    nlohmann::json j = nlohmann::json::parse(body);
+                    std::cout << "[webauthn-key-created] JSON parsed OK" << std::endl;
 
-            MYSQL* con;
+                    uint64_t user_id = 0;
+                    if (j.contains("userId") && j["userId"].is_number()) {
+                        user_id = j["userId"].get<uint64_t>();
+                    } else if (j.contains("userId") && j["userId"].is_string()) {
+                        user_id = std::stoull(j["userId"].get<std::string>());
+                    } else {
+                        res.result(http::status::bad_request);
+                        res.body() = R"({"error":"Missing userId"})";
+                        res.prepare_payload();
+                        http::write(socket, res);
+                        socket.shutdown(tcp::socket::shutdown_send);
+                        return;
+                    }
 
-            createUser(con, username, email, password);
-            res.result(http::status::ok);
-            res.set(http::field::content_type, "text/plain");
-            res.body() = "User created successfully!";
-            */
+                    bool ok = handleRegister(body, user_id);
+
+                    if (ok) {
+                        res.result(http::status::ok);
+                        res.set(http::field::content_type, "application/json");
+                        res.body() = R"({"status":"ok","saved":true})";
+                    } else {
+                        res.result(http::status::internal_server_error);
+                        res.set(http::field::content_type, "application/json");
+                        res.body() = R"({"status":"error","saved":false})";
+                    }
+
+                } catch (const std::exception& e) {
+                    std::cerr << "[webauthn-key-created] JSON parse error: " << e.what() << std::endl;
+                    res.result(http::status::bad_request);
+                    res.set(http::field::content_type, "application/json");
+                    res.body() = std::string(R"({"error":"invalid JSON","detail":")") + e.what() + "\"}";
+                }
+            } else {
+                res.result(http::status::bad_request);
+                res.set(http::field::content_type, "application/json");
+                res.body() = R"({"error":"Content-Type not application/json"})";
+            }
+
+    res.prepare_payload();
+    http::write(socket, res);
+    socket.shutdown(tcp::socket::shutdown_send);
+    return;
         }else if (req.method() == http::verb::post && req.target() == "/loginAttempt") {
             std::string body = req.body();
             std::string token = generate_random_string(32);
