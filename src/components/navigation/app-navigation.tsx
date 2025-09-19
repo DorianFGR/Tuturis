@@ -58,7 +58,7 @@ const components: NavItem[] = [
 
 export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {
   return (
-    <NavigationMenu viewport={viewport} className={cn("mt-6 ml-6", className)}>
+    <NavigationMenu viewport={viewport} className={cn("", className)}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Home</NavigationMenuTrigger>
@@ -109,7 +109,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="">
-                    <div className="font-medium">It\u0026apos;s Free !</div>
+                    <div className="font-medium">Tuturis is Free !</div>
                     <div className="text-muted-foreground">Tuturis is free to use for everyone !</div>
                   </Link>
                 </NavigationMenuLink>
