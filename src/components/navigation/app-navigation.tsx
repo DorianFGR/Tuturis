@@ -18,10 +18,10 @@ type NavItem = { title: string; href: string; description: string }
 
 const components: NavItem[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Check if your email has been pwned",
+    href: "/haveibeenpwned",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Check if your email has been compromised in a data breach.",
   },
   {
     title: "Coming soon...",
