@@ -51,7 +51,6 @@ export default function Page() {
       }
       const json: LeakCheckResult = await res.json();
       setData(json);
-      console.log("pwned result", json);
     } catch (e) {
       const message = e instanceof Error ? e.message : "Unexpected error";
       console.error(e);
