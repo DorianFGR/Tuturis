@@ -1,5 +1,22 @@
 {
   "HomePage": {
-    "title": "Hello world!"
+    "title": "Access the Data Leak Checker"
+  },
+  "haveibeenpwned": {
+    "mainButton": "Check if your email has been compromised",
+    "acceptTermsError": "You must accept the terms and conditions to continue.",
+    "setEmailError": "You must set a valid email address to continue.",
+    "dialogTitle": "Data Leak Check",
+    "dialogDescription": "Enter your email address below to see if it has been compromised in a data breach.",
+    "invalidEmailFormat": "Invalid email format.",
+    "acceptTerms": "You must accept the",
+    "termsAndConditions": "terms and conditions",
+    "cancel": "Cancel",
+    "checking": "Checking...",
+    "check": "Check if pwned",
+    "perfect": "Perfect ! No breaches found, Your account is secured.",
+    "breachesFound": "Breaches found ",
+    "Fields": "Fields ",
+    "sources": "Sources "
   }
 }

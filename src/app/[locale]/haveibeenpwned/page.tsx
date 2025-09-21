@@ -5,6 +5,7 @@ import { AppNavigation } from "@/components/navigation/app-navigation";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useTranslations } from "next-intl"
 import Link from "next/link";
 import {
   Dialog,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 
 export default function Page() {
+  const t = useTranslations('haveibeenpwned')
   type LeakCheckSuccess = {
     success: true;
     found: number;
@@ -74,15 +76,15 @@ export default function Page() {
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!termsAccepted) {
-      setError("Please accept the terms and conditions.");
+      setError(t('acceptTermsError'));
       return;
     }
     if (!email) {
-      setError("Please enter your email.");
+      setError(t('setEmailError'));
       return;
     }
     if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError(t('setEmailError'));
       return;
     }
     setError(null);
@@ -100,16 +102,16 @@ export default function Page() {
               type="button"
               className="shadow-2xl mt-10 flex h-16 w-full max-w-lg items-center justify-center"
             >
-              Check if your email has been pwned
+              {t('mainButton')}
             </ShimmerButton>
           </DialogTrigger>
         </div>
         <DialogContent className="sm:max-w-[425px]">
           <form onSubmit={onSubmit}>
             <DialogHeader>
-              <DialogTitle>Check if your email has been pwned</DialogTitle>
+              <DialogTitle>{t('dialogTitle')}</DialogTitle>
               <DialogDescription>
-                Enter your email address below to see if it has been compromised in a data breach.
+                {t('dialogDescription')}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4">
@@ -117,7 +119,7 @@ export default function Page() {
                 <p className="text-red-500 text-sm" role="alert">{error}</p>
               )}
               <div className="grid gap-3">
-                <Label htmlFor="mail-1">Email</Label>
+                <Label htmlFor="mail-1" className="mt-4">Email</Label>
                 <input
                   id="mail-1"
                   name="mail"   
@@ -128,43 +130,43 @@ export default function Page() {
                   className="bg-background border-input ring-offset-background file:text-foreground placeholder:text-muted-foreground flex h-9 w-full rounded-md border px-3 py-1 text-base shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 />
                 {email && !isValidEmail(email) && (
-                  <p className="text-red-500 text-xs">Invalid email format.</p>
+                  <p className="text-red-500 text-xs">{t('invalidEmailFormat')}</p>
                 )}
               </div>
 
               <div className="flex items-center gap-3">
-                <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(v) => setTermsAccepted(!!v)} />
+                <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(v) => setTermsAccepted(!!v)} className="mt-4 mb-4"/>
                 <Label htmlFor="terms">
-                  Accept <Link href="/terms" className="underline">terms and conditions</Link>
+                  {t('acceptTerms')} <Link href="/terms" className="underline">{t('termsAndConditions')}</Link>
                 </Label>
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <button type="button" className="border-input hover:bg-accent hover:text-accent-foreground h-9 rounded-md border bg-transparent px-3 text-sm font-medium">Cancel</button>
+                <button type="button" className="border-input hover:bg-accent hover:text-accent-foreground h-9 rounded-md border bg-transparent px-3 text-sm font-medium">{t('cancel')}</button>
               </DialogClose>
               <button
                 type="submit"
                 disabled={!termsAccepted || !email || !isValidEmail(email) || loading}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed h-9 rounded-md px-3 text-sm font-medium"
               >
-                {loading ? "Checking..." : "Check if pwned"}
+                {loading ? <>{t('checking')}</> : <>{t('check')}</>}
               </button>
             </DialogFooter>
             {data !== null && (
               <div className="mt-4 rounded-md bg-muted p-3 text-sm max-h-60 overflow-auto space-y-2">
                 {data.success === false ? (
                   data.error?.toLowerCase() === "not found" ? (
-                    <p className="text-green-600">Perfect ! No breaches found, Your account is secured.</p>
+                    <p className="text-green-600">{t('perfect')}</p>
                   ) : (
-                    <p className="text-red-500">{data.error || "An error occurred."}</p>
+                    <p className="text-red-500">{data.error || t('errorOccurred')}</p>
                   )
                 ) : (
                   <div className="space-y-2">
-                    <p className="font-medium">Breaches found: <span className="font-semibold">{data.found}</span></p>
+                    <p className="font-medium">{t('breachesFound')}: <span className="font-semibold">{data.found}</span></p>
                     {data.fields?.length > 0 && (
                       <div>
-                        <p className="font-medium">Fields:</p>
+                        <p className="font-medium">{t('Fields')}:</p>
                         <ul className="list-disc ml-5">
                           {data.fields.map((f) => (
                             <li key={f}>{f}</li>
@@ -174,7 +176,7 @@ export default function Page() {
                     )}
                     {data.sources?.length > 0 && (
                       <div>
-                        <p className="font-medium">Sources:</p>
+                        <p className="font-medium">{t('sources')}:</p>
                         <ul className="list-disc ml-5">
                           {data.sources.map((s, i) => (
                             <li key={`${s.name}-${i}`}>

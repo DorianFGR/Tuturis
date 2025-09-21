@@ -1,5 +1,22 @@
 {
   "HomePage": {
-    "title": "Salut tout le monde !"
+    "title": "Accéder au vérificateur de fuite de données"
+  },
+  "haveibeenpwned": {
+    "mainButton": "Vérifiez si votre e-mail a été compromis",
+    "acceptTermsError": "Vous devez accepter les conditions d'utilisation pour continuer.",
+    "setEmailError": "Vous devez définir une adresse e-mail valide pour continuer.",
+    "dialogTitle": "Vérification de fuite de données",
+    "dialogDescription": "Entrez votre adresse e-mail ci-dessous pour voir si elle a été compromise dans une fuite de données.",
+    "invalidEmailFormat": "Format d'e-mail invalide.",
+    "acceptTerms": "Vous devez accepter les",
+    "termsAndConditions": "conditions d'utilisation",
+    "cancel": "Retour",
+    "checking": "Vérification en cours...",
+    "check": "Vérifier les fuites",
+    "perfect": "Parfait ! Aucune fuite trouvée, votre compte est sécurisé.",
+    "breachesFound": "Fuites trouvées ",
+    "Fields": "Champs ",
+    "sources": "Sources "
   }
 }
