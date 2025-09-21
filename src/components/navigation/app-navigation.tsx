@@ -23,6 +23,7 @@ const components: NavItem[] = [
     description:
       "Check if your email has been compromised in a data breach.",
   },
+  /*
   {
     title: "Coming soon...",
     href: "/",
@@ -53,7 +54,7 @@ const components: NavItem[] = [
     description:
       "Be patient, we\u0026apos;re working hard to bring you more features!",
   },
-
+*/
 ]
 
 export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {

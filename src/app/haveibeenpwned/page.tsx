@@ -144,7 +144,11 @@ export default function Page() {
             {data !== null && (
               <div className="mt-4 rounded-md bg-muted p-3 text-sm max-h-60 overflow-auto space-y-2">
                 {data.success === false ? (
-                  <p className="text-red-500">{data.error || "No results found."}</p>
+                  data.error?.toLowerCase() === "not found" ? (
+                    <p className="text-green-600">Perfect ! No breaches found, Your account is secured.</p>
+                  ) : (
+                    <p className="text-red-500">{data.error || "An error occurred."}</p>
+                  )
                 ) : (
                   <div className="space-y-2">
                     <p className="font-medium">Breaches found: <span className="font-semibold">{data.found}</span></p>
@@ -175,7 +179,7 @@ export default function Page() {
                 )}
               </div>
             )}
-          </form>
+            </form>
         </DialogContent>
       </Dialog>
     </>
