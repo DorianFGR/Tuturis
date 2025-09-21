@@ -18,5 +18,9 @@
     "breachesFound": "Fuites trouvées ",
     "Fields": "Champs ",
     "sources": "Sources "
+  },
+  "copyright": {
+    "text": "Sous licence MIT."
   }
+
 }

@@ -18,5 +18,8 @@
     "breachesFound": "Breaches found ",
     "Fields": "Fields ",
     "sources": "Sources "
+  },
+  "copyright": {
+    "text": "Under MIT License."
   }
 }

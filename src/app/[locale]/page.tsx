@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import Copyright from "@/components/ui/copyright";
 
 export default async function Home() {
   const t = await getTranslations('HomePage');
@@ -27,6 +28,8 @@ export default async function Home() {
 
         </div>
       </main>
+
+      <Copyright />
 
     </div>
   );

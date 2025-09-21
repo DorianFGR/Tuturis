@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslations } from "next-intl"
 import Link from "next/link";
+import Copyright from "@/components/ui/copyright"
 import {
   Dialog,
   DialogClose,
@@ -196,9 +197,8 @@ export default function Page() {
       </Dialog>
       
 
-      <div className="fixed bottom-2 right-3 text-xs text-muted-foreground select-none">
-        © {new Date().getFullYear()} Tuturis. Under MIT License.
-      </div>
+      <Copyright />
+
     </>
   ) 
   
