@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppNavigation } from "@/components/navigation/app-navigation";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Label } from "@/components/ui/label"
@@ -34,6 +34,17 @@ export default function Page() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const prevBody = document.body.style.overflow;
+    const prevHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevBody || "";
+      document.documentElement.style.overflow = prevHtml || "";
+    };
+  }, []);
 
   function isValidEmail(value: string) {
 
@@ -181,6 +192,11 @@ export default function Page() {
             </form>
         </DialogContent>
       </Dialog>
+      
+
+      <div className="fixed bottom-2 right-3 text-xs text-muted-foreground select-none">
+        © {new Date().getFullYear()} Tuturis. Under MIT License.
+      </div>
     </>
   ) 
   
