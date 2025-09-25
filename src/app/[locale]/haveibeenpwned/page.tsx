@@ -138,7 +138,7 @@ export default function Page() {
               <div className="flex items-center gap-3">
                 <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(v) => setTermsAccepted(!!v)} className="mt-4 mb-4"/>
                 <Label htmlFor="terms">
-                  {t('acceptTerms')} <Link href="/terms" className="underline">{t('termsAndConditions')}</Link>
+                  {t('acceptTerms')} <Link href="/Terms-of-Service.pdf" className="underline">{t('termsAndConditions')}</Link>
                 </Label>
               </div>
             </div>

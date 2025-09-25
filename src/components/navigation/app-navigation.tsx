@@ -162,7 +162,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="#" className="flex-row items-center gap-2">
+                  <Link href="/Terms-of-Service.pdf" className="flex-row items-center gap-2">
                     <CircleCheckIcon />
                     {t("terms")}
                   </Link>
