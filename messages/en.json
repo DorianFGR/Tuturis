@@ -21,5 +21,26 @@
   },
   "copyright": {
     "text": "Under MIT License."
+  },
+  "app-navigation" :{
+    "Home":"Home",
+    "plateform":"A cybersecurity platform for personal and professional use.",
+    "whoWeAre":"Who we are ?",
+    "discoverTuturis":"Discover more about Tuturis, our mission, and values.",
+    "howToGetStarted":"How to get started",
+    "learnHowToGetStarted":"Learn how to get started with our platform quickly and easily.",
+    "contactUs":"Contact us",
+    "contactUsDescription":"Our team is here to help you with any questions or support 24/7.",
+    "tools":"Tools",
+    "checkDataLeak":"Check Data Leak",
+    "checkDataLeakDescription":"Check if your email has been compromised in a data breach.",
+    "pricing":"Pricing",
+    "itsFree":"It's Free",
+    "itsFreeDesc":"Tuturis is free to use for everyone!",
+    "language":"Language",
+    "documentation":"Documentation",
+    "howtouse":"How to use Tuturis",
+    "FAQ":"FAQ",
+    "terms":"terms of service"
   }
 }

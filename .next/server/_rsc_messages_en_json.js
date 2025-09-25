@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "_rsc_messages_en_json";
+exports.ids = ["_rsc_messages_en_json"];
+exports.modules = {
+
+/***/ "(rsc)/./messages/en.json":
+/*!**************************!*\
+  !*** ./messages/en.json ***!
+  \**************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"HomePage":{"title":"Access the Data Leak Checker"},"haveibeenpwned":{"mainButton":"Check if your email has been compromised","acceptTermsError":"You must accept the terms and conditions to continue.","setEmailError":"You must set a valid email address to continue.","dialogTitle":"Data Leak Check","dialogDescription":"Enter your email address below to see if it has been compromised in a data breach.","invalidEmailFormat":"Invalid email format.","acceptTerms":"You must accept the","termsAndConditions":"terms and conditions","cancel":"Cancel","checking":"Checking...","check":"Check if pwned","perfect":"Perfect ! No breaches found, Your account is secured.","breachesFound":"Breaches found ","Fields":"Fields ","sources":"Sources "},"copyright":{"text":"Under MIT License."},"app-navigation":{"Home":"Home","plateform":"A cybersecurity platform for personal and professional use.","whoWeAre":"Who we are ?","discoverTuturis":"Discover more about Tuturis, our mission, and values.","howToGetStarted":"How to get started","learnHowToGetStarted":"Learn how to get started with our platform quickly and easily.","contactUs":"Contact us","contactUsDescription":"Our team is here to help you with any questions or support 24/7.","tools":"Tools","checkDataLeak":"Check Data Leak","checkDataLeakDescription":"Check if your email has been compromised in a data breach.","pricing":"Pricing","itsFree":"It\'s Free","itsFreeDesc":"Tuturis is free to use for everyone!","language":"Language","documentation":"Documentation","howtouse":"How to use Tuturis","FAQ":"FAQ","terms":"terms of service"}}');
+
+/***/ })
+
+};
+;

@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "_rsc_messages_fr_json";
+exports.ids = ["_rsc_messages_fr_json"];
+exports.modules = {
+
+/***/ "(rsc)/./messages/fr.json":
+/*!**************************!*\
+  !*** ./messages/fr.json ***!
+  \**************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"HomePage":{"title":"Accéder au vérificateur de fuite de données"},"haveibeenpwned":{"mainButton":"Vérifiez si votre e-mail a été compromis","acceptTermsError":"Vous devez accepter les conditions d\'utilisation pour continuer.","setEmailError":"Vous devez définir une adresse e-mail valide pour continuer.","dialogTitle":"Vérification de fuite de données","dialogDescription":"Entrez votre adresse e-mail ci-dessous pour voir si elle a été compromise dans une fuite de données.","invalidEmailFormat":"Format d\'e-mail invalide.","acceptTerms":"Vous devez accepter les","termsAndConditions":"conditions d\'utilisation","cancel":"Retour","checking":"Vérification en cours...","check":"Vérifier les fuites","perfect":"Parfait ! Aucune fuite trouvée, votre compte est sécurisé.","breachesFound":"Fuites trouvées ","Fields":"Champs ","sources":"Sources "},"copyright":{"text":"Sous licence MIT."},"app-navigation":{"Home":"Accueil","plateform":"Une plateforme de cybersécurité pour un usage personnel et professionnel.","whoWeAre":"Qui nous sommes ?","discoverTuturis":"Découvrez-en plus sur Tuturis, notre mission et nos valeurs.","howToGetStarted":"Comment démarrer","learnHowToGetStarted":"Apprenez à démarrer rapidement et facilement sur Tuturis","contactUs":"Contactez-nous","contactUsDescription":"Notre équipe est là pour vous aider avec toutes vos questions ou support 24/7.","tools":"Outils","checkDataLeak":"Vérifier les fuite de données","checkDataLeakDescription":"Vérifiez si votre e-mail a été compromis dans une fuite de données.","pricing":"Tarification","itsFree":"C\'est gratuit","itsFreeDesc":"Tuturis est gratuit pour tout le monde !","language":"Langue","documentation":"Documentation","howtouse":"Comment utiliser Tuturis","FAQ":"FAQ","terms":"conditions d\'utilisation"}}');
+
+/***/ })
+
+};
+;
