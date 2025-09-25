@@ -3,6 +3,8 @@
 import * as React from "react"
 import Link from "next/link"
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react"
+import { useRouter, usePathname, useParams } from "next/navigation";
+import { getLanguagePath } from "@/lib/changeLanguage";
 
 import {
   NavigationMenu,
@@ -18,6 +20,13 @@ import { useTranslations } from "next-intl"
 type NavItem = { title: string; href: string; description: string }
 
 export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {
+
+  // Language change setup
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+  const currentLocale = params.locale as string;
+
   const t = useTranslations('app-navigation')
 
   const components: NavItem[] = [
@@ -126,10 +135,10 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
             <ul className="grid w-[200px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
-                  <Link href="#">English</Link>
+                  <Link href={getLanguagePath(pathname, currentLocale, "en")}>English</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="#">Français</Link>
+                  <Link href={getLanguagePath(pathname, currentLocale, "fr")}>Français</Link>
                 </NavigationMenuLink>
               </li>
             </ul>
