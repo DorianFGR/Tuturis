@@ -3,6 +3,8 @@
 import * as React from "react"
 import Link from "next/link"
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react"
+import { useRouter, usePathname, useParams } from "next/navigation";
+import { getLanguagePath } from "@/lib/changeLanguage";
 
 import {
   NavigationMenu,
@@ -13,16 +15,28 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 type NavItem = { title: string; href: string; description: string }
 
-const components: NavItem[] = [
+export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {
+
+  // Language change setup
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+  const currentLocale = params.locale as string;
+
+  const t = useTranslations('app-navigation')
+
+  const components: NavItem[] = [
   {
-    title: "Check if your email has been pwned",
+    title: t('checkDataLeak'),
     href: "/haveibeenpwned",
     description:
-      "Check if your email has been compromised in a data breach.",
+      t('checkDataLeakDescription'),
   },
+  /*
   {
     title: "Coming soon...",
     href: "/",
@@ -53,15 +67,13 @@ const components: NavItem[] = [
     description:
       "Be patient, we\u0026apos;re working hard to bring you more features!",
   },
-
+*/
 ]
-
-export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {
   return (
     <NavigationMenu viewport={viewport} className={cn("", className)}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Home</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t('Home')}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
@@ -72,25 +84,25 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                   >
                     <div className="mt-4 mb-2 text-lg font-medium">Tuturis</div>
                     <p className="text-muted-foreground text-sm leading-tight">
-                      A cybersecurity platform for personal and professional use.
+                      {t('plateform')}
                     </p>
                   </Link>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Who we are">
-                Discover more about Tuturis, our mission, and values.
+              <ListItem href="/docs" title={t('whoWeAre')}>
+                {t('discoverTuturis')}
               </ListItem>
-              <ListItem href="/docs/installation" title="How to get started">
-                Learn how to get started with our platform quickly and easily.
+              <ListItem href="/docs/installation" title={t('howToGetStarted')}>
+                {t('learnHowToGetStarted')}
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Contact us">
-                Our team is here to help you with any questions or support 24/7.
+              <ListItem href="/docs/primitives/typography" title={t('contactUs')}>
+                {t('contactUsDescription')}
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("tools")}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {components.map((component) => (
@@ -103,14 +115,14 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
         </NavigationMenuItem>
         
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Pricing</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("pricing")}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[300px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="">
-                    <div className="font-medium">Tuturis is Free !</div>
-                    <div className="text-muted-foreground">Tuturis is free to use for everyone !</div>
+                    <div className="font-medium">{t("itsFree")}</div>
+                    <div className="text-muted-foreground">{t("itsFreeDesc")}</div>
                   </Link>
                 </NavigationMenuLink>
               </li>
@@ -118,44 +130,41 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Language</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("language")}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[200px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
-                  <Link href="#">English</Link>
+                  <Link href={getLanguagePath(pathname, currentLocale, "en")}>English</Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="#">Français</Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link href="#">Coming soon ...</Link>
+                  <Link href={getLanguagePath(pathname, currentLocale, "fr")}>Français</Link>
                 </NavigationMenuLink>
               </li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Documentation</NavigationMenuTrigger>
+          <NavigationMenuTrigger>{t("documentation")}</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[200px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
                     <CircleHelpIcon />
-                    How to use
+                    {t('howtouse')}
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
                     <CircleIcon />
-                    FAQ
+                    {t("FAQ")}
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
-                  <Link href="#" className="flex-row items-center gap-2">
+                  <Link href="/Terms-of-Service.pdf" className="flex-row items-center gap-2">
                     <CircleCheckIcon />
-                    Terms of Service
+                    {t("terms")}
                   </Link>
                 </NavigationMenuLink>
               </li>
