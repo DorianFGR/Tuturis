@@ -31,6 +31,7 @@ import {
 type NavItem = { title: string; href: string; description: string }
 
 export function AppNavigation({ viewport = false, className }: { viewport?: boolean; className?: string }) {
+
   // Language change setup
   const router = useRouter();
   const pathname = usePathname();
@@ -38,8 +39,6 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
   const currentLocale = params.locale as string;
 
   const t = useTranslations('app-navigation')
-
-  // État pour contrôler le dialog de contact
   const [contactDialogOpen, setContactDialogOpen] = React.useState(false);
 
   const components: NavItem[] = [
@@ -71,16 +70,10 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                     </Link>
                   </NavigationMenuLink>
                 </li>
-                <ListItem href="/docs" title={t('whoWeAre')}>
-                  {t('discoverTuturis')}
-                </ListItem>
-                <ListItem href="/docs/installation" title={t('howToGetStarted')}>
-                  {t('learnHowToGetStarted')}
-                </ListItem>
                 <li>
                   <NavigationMenuLink asChild>
                     <button 
-                      className="w-full text-left p-3 bg-transparent border-none cursor-pointer block select-none space-y-1 rounded-md leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left bg-transparent border-none cursor-pointer"
                       onClick={() => setContactDialogOpen(true)}
                     >
                       <div className="text-sm leading-none font-medium">{t('contactUs')}</div>
@@ -131,7 +124,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                       href={getLanguagePath(pathname, currentLocale, "en")}
                       className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div className="text-sm font-medium leading-none">English</div>
+                      English
                     </Link>
                   </NavigationMenuLink>
                 </li>
@@ -141,7 +134,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                       href={getLanguagePath(pathname, currentLocale, "fr")}
                       className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div className="text-sm font-medium leading-none">Français</div>
+                      Français
                     </Link>
                   </NavigationMenuLink>
                 </li>
@@ -156,33 +149,13 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                 <li>
                   <NavigationMenuLink asChild>
                     <Link 
-                      href="#" 
-                      className="flex items-center gap-2 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <CircleHelpIcon className="h-4 w-4" />
-                      <div className="text-sm font-medium leading-none">{t('howtouse')}</div>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link 
-                      href="#" 
-                      className="flex items-center gap-2 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <CircleIcon className="h-4 w-4" />
-                      <div className="text-sm font-medium leading-none">{t("FAQ")}</div>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link 
                       href="/Terms-of-Service.pdf" 
-                      className="flex items-center gap-2 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <CircleCheckIcon className="h-4 w-4" />
-                      <div className="text-sm font-medium leading-none">{t("terms")}</div>
+                      <div className="flex items-center gap-2">
+                        <CircleCheckIcon className="h-4 w-4" />
+                        {t("terms")}
+                      </div>
                     </Link>
                   </NavigationMenuLink>
                 </li>
@@ -192,7 +165,6 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
         </NavigationMenuList>
       </NavigationMenu>
 
-      {/* Dialog de contact séparé du NavigationMenu */}
       <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -232,7 +204,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
                 type="button"
                 className="border-input hover:bg-accent hover:text-accent-foreground h-9 rounded-md border bg-transparent px-3 text-sm font-medium"
               >
-                Close
+                {t("close")}
               </button>
             </DialogClose>
           </DialogFooter>
