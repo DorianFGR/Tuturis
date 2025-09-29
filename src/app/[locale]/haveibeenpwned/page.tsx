@@ -6,7 +6,6 @@ import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useTranslations } from "next-intl"
-import Link from "next/link";
 import Copyright from "@/components/ui/copyright"
 import {
   Dialog,
@@ -138,7 +137,7 @@ export default function Page() {
               <div className="flex items-center gap-3">
                 <Checkbox id="terms" checked={termsAccepted} onCheckedChange={(v) => setTermsAccepted(!!v)} className="mt-4 mb-4"/>
                 <Label htmlFor="terms">
-                  {t('acceptTerms')} <Link href="/Terms-of-Service.pdf" className="underline">{t('termsAndConditions')}</Link>
+                  {t('acceptTerms')} <a href="/Terms-of-Service.pdf" target="_blank" rel="noopener noreferrer" className="underline">{t('termsAndConditions')}</a>
                 </Label>
               </div>
             </div>

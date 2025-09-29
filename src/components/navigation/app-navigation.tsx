@@ -147,16 +147,8 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-2 p-2">
                 <li>
+                  <a href="/Terms-of-Service.pdf" target="_blank" rel="noopener noreferrer">{t('terms')}</a>
                   <NavigationMenuLink asChild>
-                    <Link 
-                      href="/Terms-of-Service.pdf" 
-                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <div className="flex items-center gap-2">
-                        <CircleCheckIcon className="h-4 w-4" />
-                        {t("terms")}
-                      </div>
-                    </Link>
                   </NavigationMenuLink>
                 </li>
               </ul>
