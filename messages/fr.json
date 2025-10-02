@@ -34,6 +34,8 @@
     "tools":"Outils",
     "checkDataLeak":"Vérifier les fuite de données",
     "checkDataLeakDescription":"Vérifiez si votre e-mail a été compromis dans une fuite de données.",
+    "passwordStrength":"Vérifiez la solidité de votre mot de passe",
+    "passwordStrengthDescription":"Évaluez la solidité de vos mots de passe et obtenez des conseils pour les améliorer.",
     "pricing":"Tarification",
     "itsFree":"C'est gratuit",
     "itsFreeDesc":"Tuturis est gratuit pour tout le monde !",
@@ -43,5 +45,12 @@
     "FAQ":"FAQ",
     "terms":"conditions d'utilisation",
     "close":"Fermer"
+  },
+  "passChecker": {
+    "password": "Mot de passe",
+    "typePassword": "Saisissez votre mot de passe",
+    "score": "Score",
+    "suggestions": "Suggestions",
+    "crackTime": "Temps de cassage estimé"
   }
 }

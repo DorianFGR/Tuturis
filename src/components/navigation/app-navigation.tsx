@@ -47,6 +47,11 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
       href: "/haveibeenpwned",
       description: t('checkDataLeakDescription'),
     },
+    {
+      title: t('passwordStrength'),
+      href: "/passChecker",
+      description: t('passwordStrengthDescription'),
+    },
   ]
 
   return (

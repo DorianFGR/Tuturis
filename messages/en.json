@@ -34,6 +34,8 @@
     "tools":"Tools",
     "checkDataLeak":"Check Data Leak",
     "checkDataLeakDescription":"Check if your email has been compromised in a data breach.",
+    "passwordStrength":"Check your Password Strength",
+    "passwordStrengthDescription":"Evaluate the strength of your passwords and get tips to improve them.",
     "pricing":"Pricing",
     "itsFree":"It's Free",
     "itsFreeDesc":"Tuturis is free to use for everyone!",
@@ -43,5 +45,13 @@
     "FAQ":"FAQ",
     "terms":"terms of service",
     "close":"Close"
+  },
+  "passChecker": {
+    "password": "Password",
+    "typePassword": "Enter your password",
+    "score": "Score",
+    "suggestions": "Suggestions",
+    "crackTime": "Estimated crack time"
   }
+  
 }
