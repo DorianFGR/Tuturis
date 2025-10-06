@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
+import { getUser } from "@/lib/auth-server";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -52,10 +53,10 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
       href: "/passChecker",
       description: t('passwordStrengthDescription'),
     },
-  ]
+  ];
 
   return (
-    <>
+    <div className="flex justify-between items-start w-full">
       <NavigationMenu viewport={viewport} className={cn("", className)}>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -152,8 +153,15 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-2 p-2">
                 <li>
-                  <a href="/Terms-of-Service.pdf" target="_blank" rel="noopener noreferrer">{t('terms')}</a>
                   <NavigationMenuLink asChild>
+                    <a 
+                      href="/Terms-of-Service.pdf" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    >
+                      {t('terms')}
+                    </a>
                   </NavigationMenuLink>
                 </li>
               </ul>
@@ -207,7 +215,7 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
 
