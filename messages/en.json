@@ -52,6 +52,22 @@
     "score": "Score",
     "suggestions": "Suggestions",
     "crackTime": "Estimated crack time"
+  },
+  "loginForm": {
+    "signIn": "Sign In to your account",
+    "welcomeTo": "Welcome to Tuturis",
+    "donthaveAccount": "Don't have an account? ",
+    "signUp": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "or":"Or",
+    "continueWithGithub":"Continue with Github",
+    "continueWithGoogle":"Continue with Google",
+    "byClicking":"By clicking on Sign In, you agree to our ",
+    "termsOfService":"Terms of Service",
+    "and":" and ",
+    "privacyPolicy":"Privacy Policy"
   }
   
 }

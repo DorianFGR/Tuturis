@@ -52,5 +52,21 @@
     "score": "Score",
     "suggestions": "Suggestions",
     "crackTime": "Temps de cassage estimé"
+  },
+  "loginForm": {
+    "signIn": "Se connecter à votre compte",
+    "welcomeTo": "Bienvenue sur Tuturis",
+    "donthaveAccount": "Vous n'avez pas de compte ? ",
+    "signUp": "Inscrivez-vous",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "or":"Ou",
+    "continueWithGithub":"Continuer avec Github",
+    "continueWithGoogle":"Continuer avec Google",
+    "byClicking":"En cliquant sur se connecter, vous acceptez nos ",
+    "termsOfService":"Conditions d'utilisation",
+    "and":" et ",
+    "privacyPolicy":"Politique de confidentialité"
   }
 }
