@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { signinForm as SigninForm } from "./signin-form";
+import { SigninForm } from "./signin-form";
 
 export default function SignInPage() {
     const t = useTranslations('loginForm')

@@ -24,7 +24,7 @@ const SignInFormSchema = z.object({
     password: z.string()
 })
 
-export function signinForm({
+export function SigninForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
