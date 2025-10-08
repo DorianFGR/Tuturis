@@ -44,7 +44,10 @@
     "howtouse":"Comment utiliser Tuturis",
     "FAQ":"FAQ",
     "terms":"conditions d'utilisation",
-    "close":"Fermer"
+    "close":"Fermer",
+    "myaccount":"Mon compte",
+    "login":"Se connecter",
+    "signup":"S'inscrire"
   },
   "passChecker": {
     "password": "Mot de passe",

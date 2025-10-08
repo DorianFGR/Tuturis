@@ -44,7 +44,10 @@
     "howtouse":"How to use Tuturis",
     "FAQ":"FAQ",
     "terms":"terms of service",
-    "close":"Close"
+    "close":"Close",
+    "myaccount":"My Account",
+    "login":"Login",
+    "signup":"Sign Up"
   },
   "passChecker": {
     "password": "Password",

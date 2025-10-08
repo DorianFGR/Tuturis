@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils"
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
-import { getUser } from "@/lib/auth-server";
+import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -28,6 +29,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
 
 type NavItem = { title: string; href: string; description: string }
 
@@ -42,6 +48,37 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
   const t = useTranslations('app-navigation')
   const [contactDialogOpen, setContactDialogOpen] = React.useState(false);
 
+  const [user, setUser] = useState<{
+      name: string
+      email: string
+      image?: string
+    } | null>(null)
+    const [loading, setLoading] = useState(true)
+  
+    useEffect(() => {
+      async function fetchUser() {
+        try {
+          const response = await fetch("/api/getUser")
+          
+          if (!response.ok) {
+            setUser(null)
+            return
+          }
+  
+          const data = await response.json()
+          setUser(data.user)
+        } catch (error) {
+          console.error(error)
+          setUser(null)
+        } finally {
+          setLoading(false)
+        }
+      }
+  
+      fetchUser()
+    }, [])
+  
+
   const components: NavItem[] = [
     {
       title: t('checkDataLeak'),
@@ -55,8 +92,17 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
     },
   ];
 
+  const getInitials = (name: string) => {
+    if (!name) return "U"
+    const parts = name.trim().split(" ")
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase()
+    }
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
+  }
+
   return (
-    <div className="flex justify-between items-start w-full">
+    <div className="flex justify-between items-center w-full gap-4">
       <NavigationMenu viewport={viewport} className={cn("", className)}>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -169,6 +215,40 @@ export function AppNavigation({ viewport = false, className }: { viewport?: bool
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+
+      <div className="flex items-center gap-2 mt-4 mr-4">
+        {loading ? (
+          <div className="h-10 w-24 bg-accent animate-pulse rounded-md" />
+        ) : user ? (
+          <>
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage src={user.image} alt={user.name} />
+                <AvatarFallback className="rounded-lg">
+                    {getInitials(user.name)}
+                </AvatarFallback>
+            </Avatar>
+          <Button asChild variant="outline">
+
+            <Link href="/auth">
+              {t("myaccount")}
+            </Link> 
+          </Button>
+          </>
+        ) : (
+          <>
+            <Button asChild>
+              <Link href="/auth/signup">
+                {t("signup")}
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link href="/auth/signin">
+                {t("login")}
+              </Link>
+            </Button>
+          </>
+        )}
+      </div>
 
       <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
         <DialogContent className="sm:max-w-md">

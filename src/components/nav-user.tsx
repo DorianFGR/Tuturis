@@ -61,7 +61,6 @@ export function NavUser() {
     fetchUser()
   }, [])
 
-  // Fonction pour obtenir les initiales
   const getInitials = (name: string) => {
     if (!name) return "U"
     const parts = name.trim().split(" ")
