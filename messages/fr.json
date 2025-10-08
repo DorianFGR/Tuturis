@@ -68,5 +68,23 @@
     "termsOfService":"Conditions d'utilisation",
     "and":" et ",
     "privacyPolicy":"Politique de confidentialité"
+  },
+  "signupForm": {
+    "signup" : "S'inscrire",
+    "welcomeTo": "Bienvenue sur Tuturis",
+    "alreadyHaveAccount": "Vous avez déjà un compte ? ",
+    "signin": "Se connecter",
+    "name": "Nom, Prénom",
+    "typeName": "Michel Dupont",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "createAccount": "Créer un compte",
+    "or":"Ou",
+    "continueWithGitHub":"Continuer avec Github",
+    "continueWithGoogle":"Continuer avec Google",
+    "byClicking":"En cliquant sur S'inscrire, vous acceptez nos ",
+    "termsOfService":"Conditions d'utilisation",
+    "and":" et ",
+    "privacyPolicy":"Politique de confidentialité"
   }
 }

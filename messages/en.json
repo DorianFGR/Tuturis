@@ -68,6 +68,24 @@
     "termsOfService":"Terms of Service",
     "and":" and ",
     "privacyPolicy":"Privacy Policy"
+  },
+  "signupForm": {
+    "signup" : "Sign Up",
+    "welcomeTo": "Welcome to Tuturis",
+    "alreadyHaveAccount": "Already have an account? ",
+    "signin": "Sign in",
+    "name": "Name",
+    "typeName": "Elen Voxar",
+    "email": "Email",
+    "password": "Password",
+    "createAccount": "Create Account",
+    "or":"Or",
+    "continueWithGitHub":"Continue with Github",
+    "continueWithGoogle":"Continue with Google",
+    "byClicking":"By clicking on Sign Up, you agree to our ",
+    "termsOfService":"Terms of Service",
+    "and":" and ",
+    "privacyPolicy":"Privacy Policy"
   }
   
 }

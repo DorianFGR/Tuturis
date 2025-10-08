@@ -66,7 +66,7 @@ export function SigninForm({
               <div className="flex size-8 items-center justify-center rounded-md">
                 <GalleryVerticalEnd className="size-6" />
               </div>
-              <span className="sr-only">Acme Inc.</span>
+              <span className="sr-only">Tuturis.</span>
             </a>
             <h1 className="text-xl font-bold">{t('welcomeTo')}</h1>
             <FieldDescription>
@@ -120,7 +120,7 @@ export function SigninForm({
         </FieldGroup>
       </form>
       <FieldDescription className="px-6 text-center">
-        {t('byClicking')} <a href="#">{t('termsOfService')}</a>{" "}
+        {t('byClicking')} <a href="/Terms-of-Service.pdf">{t('termsOfService')}</a>{" "}
         {t('and')} <a href="#">{t('privacyPolicy')}</a>.
       </FieldDescription>
     </div>
