@@ -63,6 +63,8 @@
     "signUp": "Inscrivez-vous",
     "email": "E-mail",
     "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "reset": "Réinitialiser ici",
     "login": "Se connecter",
     "or":"Ou",
     "continueWithGithub":"Continuer avec Github",
@@ -89,5 +91,32 @@
     "termsOfService":"Conditions d'utilisation",
     "and":" et ",
     "privacyPolicy":"Politique de confidentialité"
+  },
+  "forgetPassword" :{
+    "resetYourPassword":"Réinitialisez votre mot de passe",
+    "inputEmail":"Entrez votre adresse e-mail ci-dessous et nous vous enverrons un lien pour réinitialiser votre mot de passe :",
+    "email" :"E-mail",
+    "input":"Réinitialiser votre mot de passe",
+    "cancel":"Retour"
+  },
+  "verifyEmail": {
+    "checkYourEmail":"Important : Vérifiez vos mails",
+    "weHaveSent":" Nous avons envoyé un lien de vérification à : ",
+    "pleaseCheck": " Veuillez vérifier vos mails et cliquer sur le lien pour vérifier votre compte.",
+    "notRecieved":"Vous n'avez pas reçu l'e-mail ? ",
+    "goBackLogin":"← Retourner à la connexion"
+  },
+  "reset-password": {
+    "resetYourPassword":"Réinitialisez votre mot de passe",
+    "inputEmail":"Entrez votre nouveau mot de passe ci-dessous :",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
+    "rePassword": "Re-saisir le mot de passe",
+    "resetPasswordButton":"Réinitialiser le mot de passe",
+    "errors": {
+      "passwordsDontMatch":"Les mots de passe ne correspondent pas.",
+      "passwordTooShort":"Le mot de passe doit contenir au moins 8 caractères.",
+      "invalidToken":"Jeton de réinitialisation invalide ou expiré."
+    }
   }
 }

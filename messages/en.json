@@ -63,6 +63,8 @@
     "signUp": "Sign up",
     "email": "Email",
     "password": "Password",
+    "reset": "Reset here",
+    "forgotPassword": "Forgot your password?",
     "login": "Login",
     "or":"Or",
     "continueWithGithub":"Continue with Github",
@@ -89,6 +91,32 @@
     "termsOfService":"Terms of Service",
     "and":" and ",
     "privacyPolicy":"Privacy Policy"
+  },
+  "forgetPassword" :{
+    "resetYourPassword":"Reset your password",
+    "inputEmail":"Enter your email address below and we'll send you a link to reset your password :",
+    "email" :"Email",
+    "input":"Reset your password",
+    "cancel":"Cancel"
+  },
+  "verifyEmail": {
+    "checkYourEmail":"Important : Check your email",
+    "weHaveSent":" We have sent a verification link to : ",
+    "pleaseCheck": " Please check your email and click on the link to verify your account.",
+    "notRecieved":"Didn't receive the email? ",
+    "goBackLogin":"← Go back to login"
+  },
+  "reset-password": {
+    "resetYourPassword":"Reset your password",
+    "inputEmail":"Enter your new password below :",
+    "password": "Password",
+    "rePassword": "Re-type Password",
+    "resetPasswordButton":"Reset Password",
+    "errors": {
+      "passwordsDoNotMatch": "Passwords do not match.",
+      "passwordTooShort": "Password must be at least 8 characters long.",
+      "invalidOrExpiredToken": "Invalid or expired token. Please request a new password reset."
+    }
   }
   
 }

@@ -104,6 +104,11 @@ export function SigninForm({
               {...form.register("password")}
               required
             />
+            <div className="flex items-center gap-2">
+              <FieldDescription>
+                {t('forgotPassword')} <a href="/auth/forget-password">{t('reset')}</a>
+              </FieldDescription>
+            </div>
           </Field>
           <Field>
             <Button type="submit">{t('login')}</Button>
