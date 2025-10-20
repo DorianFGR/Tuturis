@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export default function forgetPasswordPage() {
+export default function ForgetPasswordPage() {
 
     const router = useRouter();
     const t = useTranslations('forgetPassword')

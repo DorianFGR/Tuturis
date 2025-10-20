@@ -1,6 +1,7 @@
 "use client"
 
 import { GalleryVerticalEnd } from "lucide-react"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { cn } from "@/lib/utils"
 import { z } from "zod"
@@ -106,7 +107,7 @@ export function SigninForm({
             />
             <div className="flex items-center gap-2">
               <FieldDescription>
-                {t('forgotPassword')} <a href="/auth/forget-password">{t('reset')}</a>
+                {t('forgotPassword')} <Link href="/auth/forget-password">{t('reset')}</Link>
               </FieldDescription>
             </div>
           </Field>

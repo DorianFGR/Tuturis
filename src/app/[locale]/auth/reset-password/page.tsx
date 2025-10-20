@@ -3,21 +3,20 @@
 import { authClient } from "@/lib/auth-client";
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardDescription } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { useTranslations } from "next-intl";
 
 
-export default function forgetPasswordPage() {
+export default function ResetPasswordPage() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
