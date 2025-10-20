@@ -72,7 +72,14 @@
     "byClicking":"By clicking on Sign In, you agree to our ",
     "termsOfService":"Terms of Service",
     "and":" and ",
-    "privacyPolicy":"Privacy Policy"
+    "privacyPolicy":"Privacy Policy",
+    "checkMailDialog": {
+      "plsCheck" : "Please check your email",
+      "plsVerify":"Please verify your email address by clicking on the link we sent to your email when you signed up.",
+      "notRecieved":"Didn't receive the email? ",
+      "requestNewLink":"Request a new verification link",
+      "close":"Close"
+    }
   },
   "signupForm": {
     "signup" : "Sign Up",

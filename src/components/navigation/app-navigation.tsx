@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react"
 import { useRouter, usePathname, useParams } from "next/navigation";
 import { getLanguagePath } from "@/lib/changeLanguage";
 import { cn } from "@/lib/utils"
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { useTranslations } from "next-intl"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -27,7 +25,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Avatar,

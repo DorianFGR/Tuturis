@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { GalleryVerticalEnd } from "lucide-react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
@@ -14,10 +15,20 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
-import { signIn } from "@/lib/auth-client"
+import { authClient, signIn } from "@/lib/auth-client"
 import { useTranslations } from "next-intl"
 
 const SignInFormSchema = z.object({
@@ -30,6 +41,7 @@ export function SigninForm({
   ...props
 }: React.ComponentProps<"div">) {
   const t = useTranslations('loginForm')
+  const [checkEmailDialog, setCheckEmailDialog] = React.useState(false);
   
 
   const form = useForm<z.infer<typeof SignInFormSchema>>({
@@ -49,10 +61,22 @@ export function SigninForm({
       onSuccess: () => {
         router.push('/auth')
       },
-      onError: (error) => {
-        toast.error(error.error.message)
+      onError: (ctx) => {
+      // Handle the error
+      if (ctx.error.status === 403) {
+        setCheckEmailDialog(true);
       }
+
+      toast.error(ctx.error.message)
+    },
     })
+  }
+
+  async function resendVerificationEmail(email: string) {
+    await authClient.sendVerificationEmail({
+      email: email,
+      callbackURL: "/auth/signin", // The redirect URL after verification
+    });
   }
 
   async function signInWithProvider(provider: string) {
@@ -68,6 +92,7 @@ export function SigninForm({
   }
 
   return (
+    <>
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
@@ -142,5 +167,34 @@ export function SigninForm({
         {t('and')} <a href="#">{t('privacyPolicy')}</a>.
       </FieldDescription>
     </div>
+
+
+    <Dialog open={checkEmailDialog} onOpenChange={setCheckEmailDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("checkMailDialog.plsCheck")}</DialogTitle>
+            <DialogDescription>
+              {t("checkMailDialog.plsVerify")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogDescription className="mt-4 text-sm text-muted-foreground">
+            {t("checkMailDialog.notRecieved")}{' '}
+            <Button variant="link" className="p-0 inline" onClick={() => resendVerificationEmail(form.getValues("email"))}>
+              {t("checkMailDialog.requestNewLink")}
+            </Button>
+          </DialogDescription>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="border-input hover:bg-accent hover:text-accent-foreground h-9 rounded-md border bg-transparent px-3 text-sm font-medium"
+              >
+                {t("checkMailDialog.close")}
+              </button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

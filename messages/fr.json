@@ -72,7 +72,14 @@
     "byClicking":"En cliquant sur se connecter, vous acceptez nos ",
     "termsOfService":"Conditions d'utilisation",
     "and":" et ",
-    "privacyPolicy":"Politique de confidentialité"
+    "privacyPolicy":"Politique de confidentialité",
+    "checkMailDialog": {
+      "plsCheck" : "Veuillez vérifier votre e-mail",
+      "plsVerify":"Veuillez vérifier votre adresse e-mail en cliquant sur le lien que nous avons envoyé à votre e-mail lorsque vous vous êtes inscrit.",
+      "notRecieved":"Vous n'avez pas reçu l'e-mail ? ",
+      "requestNewLink":"Demander un nouveau lien de vérification",
+      "close":"Fermer"
+    }
   },
   "signupForm": {
     "signup" : "S'inscrire",
