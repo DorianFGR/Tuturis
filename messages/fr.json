@@ -125,5 +125,26 @@
       "passwordTooShort":"Le mot de passe doit contenir au moins 8 caractères.",
       "invalidToken":"Jeton de réinitialisation invalide ou expiré."
     }
+  },
+  "landingPage":{
+    "hero":{
+      "login":"Se connecter",
+      "join":"Rejoindre Tuturis",
+      "products": "Produits",
+      "pricing": "Tarification",
+      "contact": "Contact",
+      "viewPricing": "Voir la tarification",
+      "viewPricingDesc": "Découvrez nos plans tarifaires et choisissez celui qui vous convient le mieux.",
+      "contactUs":"Contactez-nous",
+      "contactUsDescription":"Contacter notre service client",
+      "close":"Retour",
+      "checkDataLeak":"Vérifier les fuite de données",
+      "checkDataLeakDescription":"Vérifiez si votre e-mail a été compromis dans une fuite de données.",
+      "passwordStrength":"Vérifiez la solidité de votre mot de passe",
+      "passwordStrengthDescription":"Évaluez la solidité de vos mots de passe et obtenez des conseils pour les améliorer.",
+      "titleP1": "La Cybersécurité, rendue",
+      "titleP2": "simple et efficace",
+      "subtitle": "Tuturis protège vos données 24/7 - afin que vous puissiez naviguer, travailler et développer votre entreprise en toute confiance."
+    }
   }
 }

@@ -124,6 +124,27 @@
       "passwordTooShort": "Password must be at least 8 characters long.",
       "invalidOrExpiredToken": "Invalid or expired token. Please request a new password reset."
     }
+  },
+  "landingPage": {
+    "hero": {
+      "login":"Login",
+      "join":"Join Tuturis",
+      "products": "Products",
+      "pricing": "Pricing",
+      "contact": "Contact",
+      "viewPricing": "View Pricing",
+      "viewPricingDesc": "Explore our pricing plans and choose the one that best suits your needs.",
+      "contactUs":"Contact us",
+      "contactUsDescription":"Contact our client support team.",
+      "close":"Close",
+      "checkDataLeak":"Check Data Leak",
+      "checkDataLeakDescription":"Check if your email has been compromised in a data breach.",
+      "passwordStrength":"Check your Password Strength",
+      "passwordStrengthDescription":"Evaluate the strength of your passwords and get tips to improve them.",
+      "titleP1": "Cybersecurity, made",
+      "titleP2": "simple and effective",
+      "subtitle": "Tuturis protects your data 24/7 — so you can browse, work, and grow your Business with confidence."
+    }
   }
   
 }
