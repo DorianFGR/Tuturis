@@ -1,6 +1,7 @@
 import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import { Button } from '../ui/button'
 import AppNavigationLanding from "../navigation/app-navigation-landing";
 
@@ -33,8 +34,8 @@ export default function Hero(){
                 </div>
                 <div className="flex items-center gap-5">
                     <AppNavigationLanding className="mr-15" />
-                    <a href="/auth/signin"><Button variant="outline">{t('login')}</Button></a>
-                    <a href="/auth/signup"><Button variant="outline">{t('join')}</Button></a>
+                    <Link href="/auth/signin"><Button variant="outline">{t('login')}</Button></Link>
+                    <Link href="/auth/signup"><Button variant="outline">{t('join')}</Button></Link>
                 </div>
             </nav>
             <div className="relative mt-30 mb-20 px-4 pt-60 min-h-[1000px]">
