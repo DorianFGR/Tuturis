@@ -1,12 +1,18 @@
+"use client"
+
 import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
+import { useState } from 'react'
 import { Button } from '../ui/button'
 import AppNavigationLanding from "../navigation/app-navigation-landing";
+import MobileBurgerMenu from './mobileBurgerMenu'
 
 export default function Hero(){
     const t = useTranslations('landingPage.hero');
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     return(
     <>
         <header className="flex block md:hidden">
@@ -15,7 +21,7 @@ export default function Hero(){
                 <h1 className="text-2xl" style={{ fontFamily: 'var(--font-inter)' }}>Tuturis</h1>
             </div>
             <div className="flex-1 flex items-center justify-end mr-4 mt-4">
-                <button><Menu className="h-6 w-6 text-[#212121]" /></button>
+                <button onClick={() => setIsMenuOpen(true)}><Menu className="h-6 w-6 text-[#212121]" /></button>
             </div>
             <div className="absolute top-1/4 transform">
                 <h1 className="text-5xl font-bold  leading-tight mx-5" style={{ fontFamily: 'var(--font-inter)' }}>
@@ -46,6 +52,8 @@ export default function Hero(){
                 <p className="ml-50 max-w-2xl mt-6 text-sm text-gray-600 relative z-10 text-left" style={{ fontFamily: 'var(--font-inter)' }}>{t('subtitle')}</p>
             </div>
         </header>
+        
+        {isMenuOpen && <MobileBurgerMenu onClose={() => setIsMenuOpen(false)} />}
     
     </>
     )

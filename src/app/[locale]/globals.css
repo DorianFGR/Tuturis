@@ -140,4 +140,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Prevent Radix Dialog from adding padding to body */
+  body[style*="pointer-events"] {
+    padding-right: 0 !important;
+  }
 }
